@@ -3,11 +3,27 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { PrimeReactProvider } from 'primereact/api';
+
+//theme
+import "primereact/resources/themes/tailwind-light/theme.css";     
+    
+//core
+import "primereact/resources/primereact.min.css";
+
+// Icons
+import 'primeicons/primeicons.css';
+
+
+// PrimeFlex
+import 'primeflex/primeflex.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <PrimeReactProvider>
+      <App />
+    </PrimeReactProvider>
   </React.StrictMode>
 );
 
