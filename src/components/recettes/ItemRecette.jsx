@@ -12,7 +12,6 @@ const ItemTemplate = (props) => {
      
     }
 
-
     return (
         <>
           <div className="col-12">

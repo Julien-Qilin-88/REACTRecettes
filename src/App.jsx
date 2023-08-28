@@ -12,7 +12,7 @@ function App() {
     const [page, setPage] = useState('home');
     const [recettes, setRecettes] = useState([]);
     const [selectedRecette, setSelectedRecette] = useState(null); // Utiliser un état pour la recette sélectionnée
-
+    
     useEffect(() => {
         const fetchRecettes = async () => {
             try {
@@ -45,7 +45,8 @@ function App() {
         <Layout setPage={setPage}>
             {page === 'home' && <Accueil />}
             {page === 'listrecette' && <ListRecette fetchRecetteById={fetchRecetteById} recettes={recettes} selectedRecette={selectedRecette} />}
-            {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}             </Layout>
+            {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}        
+        </Layout>
             );
 }
 
