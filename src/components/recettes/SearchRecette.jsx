@@ -7,6 +7,9 @@ const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds })
   const [searchTerm, setSearchTerm] = useState('');
   const [ingredientsSearchTerm, setIngredientsSearchTerm] = useState('');
 
+  // État pour la catégorie sélectionnée
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   // Gestionnaire de recherche par titre
   const handleSearch = (searchTerm) => {
     // Filtrer les recettes en fonction du terme de recherche
@@ -69,59 +72,33 @@ const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds })
     }
   }, [ingredientsSearchTerm, recettes, setFilteredRecettes, ds, handleSearchIngredients]);
 
-  // Gestionnaire de recherche par catégories
-  const handleSearchCategories = (searchTerm) => {
-    const filteredRecettes = recettes.filter((recette) =>
-      recette.categorie.includes(searchTerm));
-    setFilteredRecettes(filteredRecettes); // Mettre à jour la liste des recettes filtrées
-    ds.current.reset(); // Réinitialiser le composant de pagination
-  };
+  // Utilisation du hook useEffect pour la recherche par catégories
+  useEffect(() => {
+    // Vérifier si une catégorie a été sélectionnée
+    if (selectedCategory) {
+      const filteredRecettes = recettes.filter((recette) =>
+        recette.categorie.includes(selectedCategory)
+      );
+      setFilteredRecettes(filteredRecettes);
+      ds.current.reset();
+    }
+  }, [selectedCategory, recettes, setFilteredRecettes, ds]);
 
   // Gestionnaire de changement pour la recherche par catégories
   const handleChangeCategories = (e) => {
     const value = e.target.value;
-    handleSearchCategories(value);
+    setSelectedCategory(value); // Mettre à jour la catégorie sélectionnée
     console.log(value); // Afficher la catégorie sélectionnée dans la console
   };
 
   // Rendu du composant
   return (
-    <div className="flex flex-column gap-2 m-4 search-container">
-      {/* Champ de recherche par titre */}
-      <label htmlFor="searchInput" className="search-label">
-        Rechercher des recettes :
-      </label>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          id="searchInput"
-          placeholder="Rechercher..."
-          value={searchTerm}
-          onChange={handleChangeSearch}
-          aria-label="Champ de recherche de recettes"
-        />
-      </span>
-
-      {/* Champ de recherche par ingrédients */}
-      <label htmlFor="searchIngredients" className="search-label">
-        Rechercher des recettes par ingrédients :
-      </label>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          id="searchIngredients"
-          placeholder="Rechercher..."
-          value={ingredientsSearchTerm}
-          onChange={handleChangeIngredients}
-          aria-label="Champ de recherche de recettes par ingrédients"
-        />
-      </span>
+    <div className="flex flex-row gap-2 m-4 search-container no-wrap">
 
       {/* Sélection de catégories */}
       <fieldset>
         <legend>Choisissez une catégorie :</legend>
         <div className="flex flex-wrap gap-3">
-          {/* Génération des boutons radio pour les catégories uniques */}
           {recettes
             .reduce((uniqueRecettes, recette) => {
               const isCategoryExists = uniqueRecettes.some(
@@ -141,7 +118,7 @@ const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds })
                   name="categorie"
                   value={uniqueRecette.categorie}
                   onChange={handleChangeCategories}
-                  checked={selectedRecette && selectedRecette.categorie === uniqueRecette.categorie}
+                  checked={selectedCategory === uniqueRecette.categorie}
                 />
                 <label htmlFor={uniqueRecette.id} className="ml-2">
                   {uniqueRecette.categorie}
@@ -150,6 +127,40 @@ const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds })
             ))}
         </div>
       </fieldset>
+
+      <div className='flex flex-column'>
+
+        {/* Champ de recherche par titre */}
+        <label htmlFor="searchInput" className="search-label">
+          Rechercher des recettes :
+        </label>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            id="searchInput"
+            placeholder="Rechercher..."
+            value={searchTerm}
+            onChange={handleChangeSearch}
+            aria-label="Champ de recherche de recettes"
+          />
+        </span>
+      </div>
+      <div className='flex flex-column'>
+        {/* Champ de recherche par ingrédients */}
+        <label htmlFor="searchIngredients" className="search-label">
+          Rechercher des recettes par ingrédients :
+        </label>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            id="searchIngredients"
+            placeholder="Rechercher..."
+            value={ingredientsSearchTerm}
+            onChange={handleChangeIngredients}
+            aria-label="Champ de recherche de recettes par ingrédients"
+          />
+        </span>
+      </div>
     </div>
   );
 };

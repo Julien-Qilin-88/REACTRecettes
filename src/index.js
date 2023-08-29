@@ -5,9 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { PrimeReactProvider } from 'primereact/api';
 
+
 //theme
-import "primereact/resources/themes/tailwind-light/theme.css";     
-    
+import "primereact/resources/themes/tailwind-light/theme.css";
+
 //core
 import "primereact/resources/primereact.min.css";
 
