@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
+import { Button } from 'primereact/button';
 
-const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds }) => {
+const SearchComponent = ({ recettes, setFilteredRecettes, ds }) => {
   // États pour la recherche par titre et ingrédients
   const [searchTerm, setSearchTerm] = useState('');
   const [ingredientsSearchTerm, setIngredientsSearchTerm] = useState('');
-
-  // État pour la catégorie sélectionnée
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchType, setSearchType] = useState(''); // État pour suivre le type de recherche
+  const [selectedCategory, setSelectedCategory] = useState(''); // État pour la catégorie sélectionnée
 
   // Gestionnaire de recherche par titre
   const handleSearch = (searchTerm) => {
@@ -91,76 +91,118 @@ const SearchComponent = ({ recettes, selectedRecette, setFilteredRecettes, ds })
     console.log(value); // Afficher la catégorie sélectionnée dans la console
   };
 
+  useEffect(() => {
+    // Vérifier quel type de recherche est sélectionné
+    if (searchType === 'categories') {
+      // ... Votre logique pour le bouton "Recherche par catégories" ...
+    } else if (searchType === 'titre') {
+      // ... Votre logique pour le bouton "Recherche par titre" ...
+    } else if (searchType === 'ingredients') {
+      // ... Votre logique pour le bouton "Recherche par ingrédients" ...
+    }
+  }, [searchType, recettes, selectedCategory, searchTerm, ingredientsSearchTerm, setFilteredRecettes, ds]);
+
+  // Classe CSS pour les boutons actifs (surbrillance)
+  const activeButtonClass = 'p-button-outlined p-button-success';
+
   // Rendu du composant
   return (
     <div className="flex flex-row gap-2 m-4 search-container no-wrap">
 
+      {/* Boutons pour les différents types de recherche */}
+      <div className="flex flex-row gap-2">
+        <Button
+          label="Recherche par titre"
+          className={searchType === 'titre' ? activeButtonClass : 'p-button-outlined'}
+          onClick={() => setSearchType('titre')}
+          aria-label="Recherche par titre"
+        />
+        <Button
+          label="Recherche par ingrédients"
+          className={searchType === 'ingredients' ? activeButtonClass : 'p-button-outlined'}
+          onClick={() => setSearchType('ingredients')}
+          aria-label="Recherche par ingrédients"
+        />
+        <Button
+          label="Recherche par catégories"
+          className={searchType === 'categories' ? activeButtonClass : 'p-button-outlined'}
+          onClick={() => setSearchType('categories')}
+          aria-label="Recherche par catégories"
+        />
+      </div>
+
       {/* Sélection de catégories */}
-      <fieldset>
-        <legend>Choisissez une catégorie :</legend>
-        <div className="flex flex-wrap gap-3">
-          {recettes
-            .reduce((uniqueRecettes, recette) => {
-              const isCategoryExists = uniqueRecettes.some(
-                (uniqueRecette) => uniqueRecette.categorie === recette.categorie
-              );
+      {searchType === 'categories' && (
+        <fieldset>
+          <legend>Choisissez une catégorie :</legend>
+          <div className="flex flex-wrap gap-3">
+            {recettes
+              .reduce((uniqueRecettes, recette) => {
+                const isCategoryExists = uniqueRecettes.some(
+                  (uniqueRecette) => uniqueRecette.categorie === recette.categorie
+                );
 
-              if (!isCategoryExists) {
-                uniqueRecettes.push(recette);
-              }
+                if (!isCategoryExists) {
+                  uniqueRecettes.push(recette);
+                }
 
-              return uniqueRecettes;
-            }, [])
-            .map((uniqueRecette) => (
-              <div key={uniqueRecette.id} className="flex align-items-center">
-                <RadioButton
-                  inputId={uniqueRecette.id}
-                  name="categorie"
-                  value={uniqueRecette.categorie}
-                  onChange={handleChangeCategories}
-                  checked={selectedCategory === uniqueRecette.categorie}
-                />
-                <label htmlFor={uniqueRecette.id} className="ml-2">
-                  {uniqueRecette.categorie}
-                </label>
-              </div>
-            ))}
+                return uniqueRecettes;
+              }, [])
+              .map((uniqueRecette) => (
+                <div key={uniqueRecette.id} className="flex align-items-center">
+                  <RadioButton
+                    inputId={uniqueRecette.id}
+                    name="categorie"
+                    value={uniqueRecette.categorie}
+                    onChange={handleChangeCategories}
+                    checked={selectedCategory === uniqueRecette.categorie}
+                  />
+                  <label htmlFor={uniqueRecette.id} className="ml-2">
+                    {uniqueRecette.categorie}
+                  </label>
+                </div>
+              ))}
+          </div>
+        </fieldset>
+      )}
+      {searchType === 'titre' && (
+        <div className='flex flex-column'>
+
+          {/* Champ de recherche par titre */}
+
+          <label htmlFor="searchInput" className="search-label">
+            Rechercher des recettes :
+          </label>
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              id="searchInput"
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={handleChangeSearch}
+              aria-label="Champ de recherche de recettes"
+            />
+          </span>
         </div>
-      </fieldset>
-
-      <div className='flex flex-column'>
-
-        {/* Champ de recherche par titre */}
-        <label htmlFor="searchInput" className="search-label">
-          Rechercher des recettes :
-        </label>
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            id="searchInput"
-            placeholder="Rechercher..."
-            value={searchTerm}
-            onChange={handleChangeSearch}
-            aria-label="Champ de recherche de recettes"
-          />
-        </span>
-      </div>
-      <div className='flex flex-column'>
-        {/* Champ de recherche par ingrédients */}
-        <label htmlFor="searchIngredients" className="search-label">
-          Rechercher des recettes par ingrédients :
-        </label>
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            id="searchIngredients"
-            placeholder="Rechercher..."
-            value={ingredientsSearchTerm}
-            onChange={handleChangeIngredients}
-            aria-label="Champ de recherche de recettes par ingrédients"
-          />
-        </span>
-      </div>
+      )}
+      {searchType === 'ingredients' && (
+        <div className='flex flex-column'>
+          {/* Champ de recherche par ingrédients */}
+          <label htmlFor="searchIngredients" className="search-label">
+            Rechercher des recettes par ingrédients :
+          </label>
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText
+              id="searchIngredients"
+              placeholder="Rechercher..."
+              value={ingredientsSearchTerm}
+              onChange={handleChangeIngredients}
+              aria-label="Champ de recherche de recettes par ingrédients"
+            />
+          </span>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,11 +3,11 @@ import { TabMenu } from 'primereact/tabmenu';
 
 export default function Header(props) {
     const [activeIndex, setActiveIndex] = useState(0);
-    
+
     const items = [
         { label: 'Home', icon: 'pi pi-fw pi-home', page: 'home' },
         { label: 'Recettes', icon: 'pi pi-fw pi-calendar', page: 'listrecette' },
-        { label: 'Edit', icon: 'pi pi-fw pi-pencil' },
+        { label: 'Edit', icon: 'pi pi-fw pi-pencil', page: 'edit' },
         { label: 'Creation', icon: 'pi pi-fw pi-file', page: 'creation' },
         { label: 'Settings', icon: 'pi pi-fw pi-cog' }
     ];

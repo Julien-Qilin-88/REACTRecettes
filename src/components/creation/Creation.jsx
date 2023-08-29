@@ -127,29 +127,29 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="title">Nom</label>
+                        <label htmlFor="title">Nom :</label>
                         <InputText id="title" name="title" required onChange={handleTitlelChange} />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="description">Description</label>
+                        <label htmlFor="description">Description :</label>
                         <InputText id="description" name="description" required onChange={handleDescriptionChange} />
                     </div>
                 </div>
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="tempsDePreparation">Temps de préparation</label>
+                        <label htmlFor="tempsDePreparation">Temps de préparation :</label>
                         <InputText id="tempsDePreparation" name="tempsDePreparation" required onChange={handleTempsDePreparationChange} />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="tempsDeCuisson">Temps de cuisson</label>
+                        <label htmlFor="tempsDeCuisson">Temps de cuisson :</label>
                         <InputText id="tempsDeCuisson" name="tempsDeCuisson" required onChange={handleTempsDeCuissonChange} />
                     </div>
                 </div>
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="ingredients">Ingrédients</label>
+                        <label htmlFor="ingredients">Ingrédients :</label>
                         {recette.ingredients.map((ingredient, index) => (
                             <div key={index}>
                                 <InputText value={ingredient} onChange={e => handleIngredientChange(index, e.target.value)} />
@@ -159,7 +159,7 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                         <Button type="button" onClick={addIngredient} label="Ajouter Ingrédient" />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="instructions">Instructions</label>
+                        <label htmlFor="instructions">Instructions :</label>
                         {recette.instructions.map((instruction, index) => (
                             <div key={index}>
                                 <InputText value={instruction} onChange={e => handleInstructionChange(index, e.target.value)} />
@@ -171,12 +171,12 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="image">Image</label>
+                        <label htmlFor="image">Image :</label>
                         <InputText id="image" name="image" onChange={handleImageChange} />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="categorie">Catégorie</label>
-                        <Dropdown value={selectedCategories} options={categorie} onChange={(e) => setSelectedCategories(e.value)} placeholder="Select a Category" />
+                        <label htmlFor="categorie">Catégorie :</label>
+                        <Dropdown value={selectedCategories} options={categorie} onChange={(e) => setSelectedCategories(e.value)} placeholder="Sélectionner une catégorie" />
                         <Button type="submit" label="Envoyer" />
                     </div>
                 </div>
