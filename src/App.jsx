@@ -15,6 +15,7 @@ function App() {
     const [recettes, setRecettes] = useState([]);
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
+    console.log('selectedRecette', selectedRecette);
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
@@ -78,7 +79,10 @@ function App() {
                     showRecetteDetails={showRecetteDetails}
                     setShowRecetteDetails={setShowRecetteDetails}
                     selectedRecette={selectedRecette}
+                    setSelectedRecette={setSelectedRecette}
                     setPage={setPage}
+
+
                 />
             )}
         </Layout>
