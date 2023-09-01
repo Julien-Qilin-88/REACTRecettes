@@ -88,7 +88,7 @@ const SearchComponent = ({ recettes, setFilteredRecettes, ds }) => {
   const handleChangeCategories = (e) => {
     const value = e.target.value;
     setSelectedCategory(value); // Mettre à jour la catégorie sélectionnée
-    console.log(value); // Afficher la catégorie sélectionnée dans la console
+
   };
 
   useEffect(() => {
