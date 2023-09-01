@@ -1,11 +1,13 @@
-// ...
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from 'primereact/card';
 import ElementRecette from './ElementRecette';
 import axios from 'axios';
+import SearchEditRecette from './SearchEditRecette';
 
-const EditRecette = ({ selectedRecette }) => {
+const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredRecettes }) => {
     const [updatedRecette, setUpdatedRecette] = useState(selectedRecette);
+
+    const dsEdit = useRef(null);
 
     const handleUpdateRecette = async (updatedData, recetteId) => {
         try {
@@ -19,113 +21,125 @@ const EditRecette = ({ selectedRecette }) => {
         document.title = updatedRecette ? updatedRecette.title : 'Édition de recette';
     }, [updatedRecette]);
 
+
     return (
-        <Card style={{ width: '100%' }}>
-            <div className='flex gap-4'>
-                <ElementRecette
-                    label="Titre"
-                    value={updatedRecette.title}
-                    onSave={(newValue) => {
-                        setUpdatedRecette({ ...updatedRecette, title: newValue });
-                        handleUpdateRecette({ title: newValue }, updatedRecette.id);
+        <>
 
-                    }}
-                    elementType="h2"
-                    updateRecette={handleUpdateRecette}
-                    recetteId={updatedRecette.id}
-                />
-            </div>
-
-            <div className='flex gap-4'>
-                <ElementRecette
-                    label="Image"
-                    value={<img className='card__image' src={updatedRecette.image} alt={updatedRecette.title} />}
-                    onSave={(newValue) => setUpdatedRecette({ ...updatedRecette, image: newValue })}
-                    elementType="div"
-                    updateRecette={handleUpdateRecette}
-                    recetteId={updatedRecette.id}
-                />
-            </div>
-
-            <div className='flex gap-4'>
-                <ElementRecette
-                    label="Temps de préparation"
-                    value={updatedRecette.tempsDePreparation + ' minutes'}
-                    onSave={(newValue) => {
-                        setUpdatedRecette({ ...updatedRecette, tempsDePreparation: parseInt(newValue) })
-                        handleUpdateRecette({ tempsDePreparation: parseInt(newValue) }, updatedRecette.id);
-                    }}
-                    elementType="p"
-                    updateRecette={handleUpdateRecette}
-                    recetteId={updatedRecette.id}
-
-                />
-            </div>
-
-            <div className='flex gap-4'>
-                <ElementRecette
-                    label="Temps de cuisson"
-                    value={updatedRecette.tempsDeCuisson + ' minutes'}
-                    onSave={(newValue) => {
-                        setUpdatedRecette({ ...updatedRecette, tempsDeCuisson: parseInt(newValue) })
-                        handleUpdateRecette({ tempsDeCuisson: parseInt(newValue) }, updatedRecette.id);
-                    }}
-                    elementType="p"
-                    updateRecette={handleUpdateRecette}
-                    recetteId={updatedRecette.id}
-                />
-            </div>
-
-            <div className='flex flex-column gap-4'>
-                <h3>Ingrédients</h3>
-                <ul>
-                    {updatedRecette.ingredients && updatedRecette.ingredients.map((ingredient, index) => (
+            {selectedRecette && (
+                <Card style={{ width: '100%' }}>
+                    <div className='flex gap-4'>
                         <ElementRecette
-                            key={index}
-                            value={ingredient}
+                            label="Titre"
+                            value={updatedRecette.title}
                             onSave={(newValue) => {
-                                const newIngredients = [...updatedRecette.ingredients];
-                                newIngredients[index] = newValue;
-                                setUpdatedRecette({ ...updatedRecette, ingredients: newIngredients });
-                                handleUpdateRecette({ ingredients: newIngredients }, updatedRecette.id);
+                                setUpdatedRecette({ ...updatedRecette, title: newValue });
+                                handleUpdateRecette({ title: newValue }, updatedRecette.id);
 
                             }}
-                            elementType="li"
+                            elementType="h2"
                             updateRecette={handleUpdateRecette}
                             recetteId={updatedRecette.id}
                         />
-                    ))}
-                </ul>
+                    </div>
 
-            </div>
-
-            <div className='flex flex-column gap-4'>
-                <h3>Instructions</h3>
-                <ol>
-                    {updatedRecette.instructions && updatedRecette.instructions.map((instruction, index) => (
+                    <div className='flex gap-4'>
                         <ElementRecette
-                            key={index}
-                            value={instruction}
-                            onSave={(newValue) => {
-                                const newInstructions = [...updatedRecette.instructions];
-                                newInstructions[index] = newValue;
-                                setUpdatedRecette({ ...updatedRecette, instructions: newInstructions });
-                                handleUpdateRecette({ instructions: newInstructions }, updatedRecette.id);
-                            }}
-                            elementType="li"
+                            label="Image"
+                            value={<img className='card__image' src={updatedRecette.image} alt={updatedRecette.title} />}
+                            onSave={(newValue) => setUpdatedRecette({ ...updatedRecette, image: newValue })}
+                            elementType="div"
                             updateRecette={handleUpdateRecette}
                             recetteId={updatedRecette.id}
                         />
-                    ))}
-                </ol>
+                    </div>
 
-            </div>
+                    <div className='flex gap-4'>
+                        <ElementRecette
+                            label="Temps de préparation"
+                            value={updatedRecette.tempsDePreparation + ' minutes'}
+                            onSave={(newValue) => {
+                                setUpdatedRecette({ ...updatedRecette, tempsDePreparation: parseInt(newValue) })
+                                handleUpdateRecette({ tempsDePreparation: parseInt(newValue) }, updatedRecette.id);
+                            }}
+                            elementType="p"
+                            updateRecette={handleUpdateRecette}
+                            recetteId={updatedRecette.id}
 
+                        />
+                    </div>
 
+                    <div className='flex gap-4'>
+                        <ElementRecette
+                            label="Temps de cuisson"
+                            value={updatedRecette.tempsDeCuisson + ' minutes'}
+                            onSave={(newValue) => {
+                                setUpdatedRecette({ ...updatedRecette, tempsDeCuisson: parseInt(newValue) })
+                                handleUpdateRecette({ tempsDeCuisson: parseInt(newValue) }, updatedRecette.id);
+                            }}
+                            elementType="p"
+                            updateRecette={handleUpdateRecette}
+                            recetteId={updatedRecette.id}
+                        />
+                    </div>
 
+                    <div className='flex flex-column gap-4'>
+                        <h3>Ingrédients</h3>
+                        <ul>
+                            {updatedRecette.ingredients && updatedRecette.ingredients.map((ingredient, index) => (
+                                <ElementRecette
+                                    key={index}
+                                    value={ingredient}
+                                    onSave={(newValue) => {
+                                        const newIngredients = [...updatedRecette.ingredients];
+                                        newIngredients[index] = newValue;
+                                        setUpdatedRecette({ ...updatedRecette, ingredients: newIngredients });
+                                        handleUpdateRecette({ ingredients: newIngredients }, updatedRecette.id);
 
-            <p>Bon appétit !</p>
-        </Card>
+                                    }}
+                                    elementType="li"
+                                    updateRecette={handleUpdateRecette}
+                                    recetteId={updatedRecette.id}
+                                />
+                            ))}
+                        </ul>
+
+                    </div>
+
+                    <div className='flex flex-column gap-4'>
+                        <h3>Instructions</h3>
+                        <ol>
+                            {updatedRecette.instructions && updatedRecette.instructions.map((instruction, index) => (
+                                <ElementRecette
+                                    key={index}
+                                    value={instruction}
+                                    onSave={(newValue) => {
+                                        const newInstructions = [...updatedRecette.instructions];
+                                        newInstructions[index] = newValue;
+                                        setUpdatedRecette({ ...updatedRecette, instructions: newInstructions });
+                                        handleUpdateRecette({ instructions: newInstructions }, updatedRecette.id);
+                                    }}
+                                    elementType="li"
+                                    updateRecette={handleUpdateRecette}
+                                    recetteId={updatedRecette.id}
+                                />
+                            ))}
+                        </ol>
+
+                    </div>
+
+                    <p>Bon appétit !</p>
+                </Card>
+            )}
+
+            {!selectedRecette && (
+                <>
+                    <p>Veuillez sélectionner une recette à éditer</p>
+                    <SearchEditRecette recettes={recettes} dsEdit={dsEdit} filteredRecettes={filteredRecettes} setFilteredRecettes={setFilteredRecettes} setSelectedRecette={setUpdatedRecette} />
+                </>
+            )}
+
+        </>
+
     );
 };
 

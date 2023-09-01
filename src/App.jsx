@@ -12,10 +12,11 @@ import { useState, useEffect } from 'react'; // Importe les modules React néces
 function App() {
     // États pour gérer la page actuelle, les recettes et la recette sélectionnée
     const [page, setPage] = useState('home');
+    const [filteredRecettes, setFilteredRecettes] = useState([]);
     const [recettes, setRecettes] = useState([]);
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
-
+    console.log(page);
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
@@ -68,10 +69,12 @@ function App() {
                     handleEditRecette={handleEditRecette}
                     setPage={setPage}
                     page={page}
+                    filteredRecettes={filteredRecettes}
+                    setFilteredRecettes={setFilteredRecettes}
                 />
             )}
             {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
-            {page === 'edit' && selectedRecette && (
+            {page === 'edit' && (
                 <EditRecette
                     recettes={recettes}
                     setRecettes={setRecettes}
@@ -81,8 +84,9 @@ function App() {
                     selectedRecette={selectedRecette}
                     setSelectedRecette={setSelectedRecette}
                     setPage={setPage}
-
-
+                    page={page}
+                    filteredRecettes={filteredRecettes}
+                    setFilteredRecettes={setFilteredRecettes}
                 />
             )}
         </Layout>

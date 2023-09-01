@@ -6,10 +6,10 @@ import Recette from './Recette'; // Importe le composant de détails de recette
 import SearchRecette from './SearchRecette'; // Importe le composant de recherche de recette
 
 // Composant de liste de recettes
-export default function ListRecette({ fetchRecetteById, recettes, selectedRecette, showRecetteDetails, setShowRecetteDetails, setPage, handleEditRecette, page, ...props }) {
+export default function ListRecette({ fetchRecetteById, recettes, selectedRecette, showRecetteDetails, setShowRecetteDetails, setPage, handleEditRecette, page, filteredRecettes, setFilteredRecettes, ...props }) {
 
   // États pour gérer la liste filtrée de recettes et la pagination
-  const [filteredRecettes, setFilteredRecettes] = useState([]);
+
   const [loadedRecettesCount, setLoadedRecettesCount] = useState(0);
   const [allRecettesLoaded, setAllRecettesLoaded] = useState(false);
 
