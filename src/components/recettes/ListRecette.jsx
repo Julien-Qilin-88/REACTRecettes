@@ -21,7 +21,7 @@ export default function ListRecette({ fetchRecetteById, recettes, selectedRecett
     setFilteredRecettes(recettes);
     setLoadedRecettesCount(0);
     setAllRecettesLoaded(false);
-  }, [recettes]);
+  }, [recettes, setFilteredRecettes]);
 
   // Effet pour déterminer si toutes les recettes ont été chargées
   useEffect(() => {

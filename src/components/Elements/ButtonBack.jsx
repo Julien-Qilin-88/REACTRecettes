@@ -5,7 +5,7 @@ const ButtonBack = (props) => {
 
     const handleClickBack = () => {
         props.setShowRecetteDetails(false);
-        props.setPage('listrecette');
+        props.setPage('recettes');
     }
 
     return (

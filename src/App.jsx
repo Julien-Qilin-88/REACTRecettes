@@ -4,7 +4,9 @@ import Accueil from './components/home/Accueil';
 import Layout from './components/layout/Layout';
 import ListRecette from './components/recettes/ListRecette';
 import Creation from './components/creation/Creation';
-import EditRecette from './components/editer_recette/EditRecette';
+import EditRecette from './components/recettes/EditRecette';
+import Inscription from './components/layout/Inscription';
+import Connexion from './components/layout/Connexion';
 import axios from 'axios'; // Importe le module Axios pour les requêtes HTTP
 import { useState, useEffect } from 'react'; // Importe les modules React nécessaires
 
@@ -16,7 +18,7 @@ function App() {
     const [recettes, setRecettes] = useState([]);
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
-    console.log(page);
+    const [editMode, setEditMode] = useState(false);
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
@@ -44,22 +46,27 @@ function App() {
 
     // Fonction pour gérer la création d'une nouvelle recette
     const handleRecetteCreation = () => {
-        setPage('listrecette');
+        setPage('recettes');
         setSelectedRecette(null);
+    };
+
+    const activateEditMode = () => {
+        setEditMode(true);
     };
 
     // Fonction pour gérer la modification d'une recette
     const handleEditRecette = (recetteId) => {
-        const selectedRecette = recettes.find(recette => recette.id === recetteId);
+        const selectedRecette = recettes.find((recette) => recette.id === recetteId);
         setSelectedRecette(selectedRecette);
-        setPage('edit');
+        activateEditMode();
+        setPage('recettes');
     };
 
     // Rendu du composant principal de l'application
     return (
         <Layout setPage={setPage}>
             {page === 'home' && <Accueil />}
-            {page === 'listrecette' && (
+            {page === 'recettes' && !editMode && (
                 <ListRecette
                     fetchRecetteById={fetchRecetteById}
                     recettes={recettes}
@@ -73,8 +80,7 @@ function App() {
                     setFilteredRecettes={setFilteredRecettes}
                 />
             )}
-            {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
-            {page === 'edit' && (
+            {page === 'recettes' && editMode && (
                 <EditRecette
                     recettes={recettes}
                     setRecettes={setRecettes}
@@ -89,6 +95,10 @@ function App() {
                     setFilteredRecettes={setFilteredRecettes}
                 />
             )}
+            {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
+
+            {page === 'inscription' && <Inscription />}
+            {page === 'connexion' && <Connexion />}
         </Layout>
     );
 }

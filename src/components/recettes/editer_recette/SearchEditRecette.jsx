@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { InputText } from 'primereact/inputtext';
 import { DataScroller } from 'primereact/datascroller';
+import ItemRecette from '../ItemRecette';
 
 const SearchEditRecette = ({ recettes, filteredRecettes, setFilteredRecettes, dsEdit, setSelectedRecette }) => {
     const [searchTermEdit, setSearchTermEdit] = useState('');
@@ -34,23 +35,18 @@ const SearchEditRecette = ({ recettes, filteredRecettes, setFilteredRecettes, ds
             <DataScroller
                 ref={dsEdit}
                 value={filteredRecettes} // Utilisez les recettes filtrées
-                itemTemplate={(recette) => (
-                    <div className='flex gap-4'>
-                        <div className='card'>
-                            <img className='card__image' src={recette.image} alt={recette.title} />
-                            <div className='card__body'>
-                                <h2 className='card__title'>{recette.title}</h2>
-                                <p className='card__description'>{recette.description}</p>
-                                <button onClick={() => setSelectedRecette(recette)}>Éditer</button> {/* Bouton d'édition */}
-                            </div>
-                        </div>
-                    </div>
-                )}
-                rows={5}
+                rows={filteredRecettes.length} // Nombre de recettes à afficher
                 inline
                 scrollHeight="500px"
+                itemTemplate={(recette) => (
+                    <ItemRecette
+                        {...recette}
+                        setSelectedRecette={setSelectedRecette}
+
+                    />
+                )}
             />
-            />
+
 
         </>
 

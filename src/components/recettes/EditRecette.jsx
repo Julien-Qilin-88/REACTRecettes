@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card } from 'primereact/card';
-import ElementRecette from './ElementRecette';
+import ElementRecette from './editer_recette/ElementRecette';
 import axios from 'axios';
-import SearchEditRecette from './SearchEditRecette';
+import SearchEditRecette from './editer_recette/SearchEditRecette';
 
 const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredRecettes }) => {
     const [updatedRecette, setUpdatedRecette] = useState(selectedRecette);
