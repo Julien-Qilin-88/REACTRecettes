@@ -10,11 +10,11 @@ export default function Accueil() {
     }
 
     return (
-        <>
+        <div className='p-4'>
             <h1>Accueil</h1>
             <p>Bienvenue sur le site de recettes de cuisine</p>
             <p>Vous avez cliqué {count} fois</p>
             <Button label="Click" onClick={increment} />
-        </>
+        </div >
     );
 } 

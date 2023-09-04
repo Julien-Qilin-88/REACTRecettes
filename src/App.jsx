@@ -19,12 +19,13 @@ function App() {
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
         const fetchRecettes = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/recettes');
+                const response = await axios.get('http://localhost:3002/api/recettes');
                 setRecettes(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des données :', error);
@@ -37,7 +38,7 @@ function App() {
     // Fonction pour récupérer une recette par son ID
     const fetchRecetteById = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/recettes/${id}`);
+            const response = await axios.get(`http://localhost:3002/api/recettes/${id}`);
             setSelectedRecette(response.data);
         } catch (error) {
             console.error('Erreur lors de la récupération des données :', error);
@@ -64,7 +65,7 @@ function App() {
 
     // Rendu du composant principal de l'application
     return (
-        <Layout setPage={setPage}>
+        <Layout setPage={setPage} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}>
             {page === 'home' && <Accueil />}
             {page === 'recettes' && !editMode && (
                 <ListRecette
@@ -98,7 +99,7 @@ function App() {
             {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
 
             {page === 'inscription' && <Inscription />}
-            {page === 'connexion' && <Connexion />}
+            {page === 'connexion' && <Connexion setIsAuthenticated={setIsAuthenticated} />}
         </Layout>
     );
 }

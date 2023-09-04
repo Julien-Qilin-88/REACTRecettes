@@ -11,7 +11,7 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
 
     const handleUpdateRecette = async (updatedData, recetteId) => {
         try {
-            await axios.put(`http://localhost:3001/api/recettes/${recetteId}`, updatedData);
+            await axios.put(`http://localhost:3002/api/recettes/${recetteId}`, updatedData);
         } catch (error) {
             console.error('Erreur lors de la mise à jour de la recette :', error);
         }
