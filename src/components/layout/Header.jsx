@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { TabMenu } from 'primereact/tabmenu';
 import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import Connexion from './Connexion';
+import Inscription from './Inscription';
 
 export default function Header(props) {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [visible, setVisible] = useState(false);
     const isAuthenticated = props.isAuthenticated;
 
     const handleLogout = () => {
         // Gérez la déconnexion ici
         props.setIsAuthenticated(false);
+        localStorage.removeItem('isAuthenticated', 'false');
     };
 
     const menuItemsUnauthenticated = [
@@ -43,11 +48,22 @@ export default function Header(props) {
                 </div>
                 :
                 <div className='flex gap-2'>
-                    <Button label='Connexion' onClick={() => props.setPage('connexion')} />
-                    <Button label='Inscription' onClick={() => props.setPage('inscription')} />
+                    <Button label="Connexion" icon="pi pi-external-link" onClick={() => setVisible(true)} />
+                    <Dialog header="Connexion" visible={visible} onHide={() => setVisible(false)}
+                        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+                        <Connexion setIsAuthenticated={props.setIsAuthenticated} />
+                    </Dialog>
+
+                    <Button label="Inscription" icon="pi pi-external-link" onClick={() => setVisible(true)} />
+                    <Dialog header="Inscription" visible={visible} onHide={() => setVisible(false)}
+                        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+                        <Inscription setVisible={setVisible} />
+                    </Dialog>
                 </div>
             }
+            <div className="card flex justify-content-center">
 
+            </div>
 
 
         </div>

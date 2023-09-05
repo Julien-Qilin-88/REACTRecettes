@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import axios from 'axios'; // Importez axios ici
+import { Button } from 'primereact/button';
 
-export default function Inscription() {
+export default function Inscription({ setVisible }) {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -33,10 +34,11 @@ export default function Inscription() {
                 email: formData.email,
             });
 
-            if (response.status === 201) { // Vérifiez le code de statut HTTP
+            if (response.status === 200) { // Vérifiez le code de statut HTTP
                 // L'inscription a réussi, redirigez l'utilisateur vers une page de confirmation ou connectez automatiquement l'utilisateur.
                 console.log('Inscription réussie !');
                 // Vous pouvez ajouter ici la redirection ou la connexion automatique.
+                setVisible(false);
             } else {
                 console.error(response.data.message);
             }
@@ -47,11 +49,11 @@ export default function Inscription() {
 
     return (
         <div>
-            <h2>Inscription</h2>
             <form onSubmit={handleSubmit}>
-                <div className="p-fluid">
-                    <div className="p-field">
-                        <label htmlFor="username">Username</label>
+
+                <div className="p-field flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
+
+                    <span className="p-float-label">
                         <InputText
                             id="username"
                             type="text"
@@ -60,8 +62,10 @@ export default function Inscription() {
                             onChange={handleChange}
                             autoComplete="username"
                         />
+                        <label htmlFor="username">Username</label>
+                    </span>
 
-                        <label htmlFor="password">Password</label>
+                    <span className="p-float-label">
                         <Password
                             id="password"
                             name="password"
@@ -69,9 +73,12 @@ export default function Inscription() {
                             value={formData.password}
                             onChange={handleChange}
                             autoComplete="new-password"
+                            toggleMask
                         />
+                        <label htmlFor="password">Password</label>
+                    </span>
 
-                        <label htmlFor="confirmPassword">Confirm Password</label>
+                    <span className="p-float-label">
                         <Password
                             id="confirmPassword"
                             name="confirmPassword"
@@ -79,9 +86,13 @@ export default function Inscription() {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             autoComplete="new-password"
+                            toggleMask
                         />
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                    </span>
 
-                        <label htmlFor="email">Email</label>
+                    <span className="p-float-label">
+
                         <InputText
                             id="email"
                             type="email"
@@ -90,8 +101,10 @@ export default function Inscription() {
                             value={formData.email}
                             onChange={handleChange}
                         />
+                        <label htmlFor="email">Email</label>
+                    </span>
 
-                        <label htmlFor="confirmEmail">Confirm Email</label>
+                    <span className="p-float-label">
                         <InputText
                             id="confirmEmail"
                             type="email"
@@ -100,10 +113,13 @@ export default function Inscription() {
                             value={formData.confirmEmail}
                             onChange={handleChange}
                         />
+                        <label htmlFor="confirmEmail">Confirm Email</label>
+                    </span>
 
-                        <button type="submit">Inscription</button>
-                    </div>
+
+                    <Button type="submit" label="Submit" className="p-mt-2" />
                 </div>
+
             </form>
         </div>
     );

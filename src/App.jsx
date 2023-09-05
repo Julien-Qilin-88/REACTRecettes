@@ -19,7 +19,7 @@ function App() {
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {

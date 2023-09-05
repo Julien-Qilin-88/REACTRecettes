@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 
-export default function Connexion({ setIsAuthenticated }) { // Renommé la fonction pour commencer par une majuscule
+export default function Connexion({ setIsAuthenticated }) {
 
     const [FormDataConnexion, setFormDataConnexion] = useState({
         name: '',
@@ -21,13 +21,14 @@ export default function Connexion({ setIsAuthenticated }) { // Renommé la fonct
 
         try {
             const response = await axios.post('http://localhost:3001/user/connexion', {
-                name: FormDataConnexion.name, // Utilisez 'name' au lieu de 'name' pour correspondre à votre champ d'entrée
+                name: FormDataConnexion.name,
                 password: FormDataConnexion.password,
             });
 
             if (response.status === 200) {
                 console.log('Connexion réussie !');
-                setIsAuthenticated(true); // Définissez l'état isAuthenticated sur true
+                setIsAuthenticated(true);
+                localStorage.setItem('isAuthenticated', 'true');
             } else {
                 console.error(response.data.message);
             }
@@ -38,22 +39,23 @@ export default function Connexion({ setIsAuthenticated }) { // Renommé la fonct
 
     return (
         <div>
-            <h2>Connexion</h2>
             <form onSubmit={handleSubmit}>
-                <div className="p-fluid">
-                    <div className="p-field">
-                        <label htmlFor="name">name</label>
+                <div className="flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
+
+                    <span className="p-float-label">
                         <InputText
                             id="name"
                             type="text"
                             name="name"
-                            value={FormDataConnexion.name} // Utilisez 'name' au lieu de 'name'
+                            value={FormDataConnexion.name}
                             onChange={handleChange}
                             autoComplete="name"
                         />
-                    </div>
-                    <div className="p-field">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="name">name</label>
+                    </span>
+
+
+                    <span className="p-float-label">
                         <Password
                             id="password"
                             name="password"
@@ -61,8 +63,12 @@ export default function Connexion({ setIsAuthenticated }) { // Renommé la fonct
                             value={FormDataConnexion.password}
                             onChange={handleChange}
                             autoComplete="current-password"
+                            feedback={false}
+                            toggleMask
                         />
-                    </div>
+                        <label htmlFor="password">Password</label>
+                    </span>
+
                     <Button type="submit" label="Submit" />
                 </div>
             </form>
