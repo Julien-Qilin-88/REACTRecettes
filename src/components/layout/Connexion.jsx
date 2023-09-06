@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 
-export default function Connexion({ setIsAuthenticated }) {
+export default function Connexion({ setIsAuthenticated, setSignupVisible }) {
 
     const [FormDataConnexion, setFormDataConnexion] = useState({
         name: '',
@@ -42,7 +42,7 @@ export default function Connexion({ setIsAuthenticated }) {
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
 
-                    <span className="p-float-label">
+                    <span className="p-float-label mt-4">
                         <InputText
                             id="name"
                             type="text"
@@ -51,7 +51,7 @@ export default function Connexion({ setIsAuthenticated }) {
                             onChange={handleChange}
                             autoComplete="name"
                         />
-                        <label htmlFor="name">name</label>
+                        <label htmlFor="name">Pseudo</label>
                     </span>
 
 
@@ -66,10 +66,14 @@ export default function Connexion({ setIsAuthenticated }) {
                             feedback={false}
                             toggleMask
                         />
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Mot de passe</label>
                     </span>
+                    <div>
+                        <Button type="submit" label="Valider" />
+                        {/* je n'ai pas de compte */}
+                        <Button type="button" label="Inscription" onClick={() => setSignupVisible(true)} />
+                    </div>
 
-                    <Button type="submit" label="Submit" />
                 </div>
             </form>
         </div>

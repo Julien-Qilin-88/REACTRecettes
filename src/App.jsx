@@ -5,8 +5,7 @@ import Layout from './components/layout/Layout';
 import ListRecette from './components/recettes/ListRecette';
 import Creation from './components/creation/Creation';
 import EditRecette from './components/recettes/EditRecette';
-import Inscription from './components/layout/Inscription';
-import Connexion from './components/layout/Connexion';
+
 import axios from 'axios'; // Importe le module Axios pour les requêtes HTTP
 import { useState, useEffect } from 'react'; // Importe les modules React nécessaires
 
@@ -20,6 +19,7 @@ function App() {
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
+    const [randomRecipe, setRandomRecipe] = useState([]);
 
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
@@ -45,6 +45,20 @@ function App() {
         }
     };
 
+    // Effet pour récupérer une recettes aleatoire à partir de l'API au chargement de l'application
+    useEffect(() => {
+        const fetchRandomRecipe = async () => {
+            try {
+                const response = await axios.get('http://localhost:3002/api/recette-du-jour');
+                setRandomRecipe(response.data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération de la recette aléatoire :', error);
+            }
+        };
+
+        fetchRandomRecipe();
+    }, []);
+
     // Fonction pour gérer la création d'une nouvelle recette
     const handleRecetteCreation = () => {
         setPage('recettes');
@@ -66,7 +80,7 @@ function App() {
     // Rendu du composant principal de l'application
     return (
         <Layout setPage={setPage} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}>
-            {page === 'home' && <Accueil />}
+            {page === 'home' && <Accueil randomRecipe={randomRecipe} />}
             {page === 'recettes' && !editMode && (
                 <ListRecette
                     fetchRecetteById={fetchRecetteById}
@@ -79,6 +93,7 @@ function App() {
                     page={page}
                     filteredRecettes={filteredRecettes}
                     setFilteredRecettes={setFilteredRecettes}
+                    isAuthenticated={isAuthenticated}
                 />
             )}
             {page === 'recettes' && editMode && (
@@ -97,9 +112,6 @@ function App() {
                 />
             )}
             {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
-
-            {page === 'inscription' && <Inscription />}
-            {page === 'connexion' && <Connexion setIsAuthenticated={setIsAuthenticated} />}
         </Layout>
     );
 }

@@ -6,7 +6,7 @@ import Recette from './Recette'; // Importe le composant de détails de recette
 import SearchRecette from './SearchRecette'; // Importe le composant de recherche de recette
 
 // Composant de liste de recettes
-export default function ListRecette({ fetchRecetteById, recettes, selectedRecette, showRecetteDetails, setShowRecetteDetails, setPage, handleEditRecette, page, filteredRecettes, setFilteredRecettes, ...props }) {
+export default function ListRecette({ fetchRecetteById, recettes, selectedRecette, showRecetteDetails, setShowRecetteDetails, setPage, handleEditRecette, page, filteredRecettes, setFilteredRecettes, isAuthenticated, ...props }) {
 
   // États pour gérer la liste filtrée de recettes et la pagination
 
@@ -47,7 +47,7 @@ export default function ListRecette({ fetchRecetteById, recettes, selectedRecett
   return (
     <>
       {showRecetteDetails ? (
-        <Recette selectedRecette={selectedRecette} setShowRecetteDetails={setShowRecetteDetails} setPage={setPage} handleEditRecette={handleEditRecette} page={props.page} />
+        <Recette selectedRecette={selectedRecette} setShowRecetteDetails={setShowRecetteDetails} setPage={setPage} handleEditRecette={handleEditRecette} page={props.page} isAuthenticated={isAuthenticated} />
       ) : (
         <>
           {/* Composant de recherche de recette */}
@@ -69,6 +69,7 @@ export default function ListRecette({ fetchRecetteById, recettes, selectedRecett
                 setShowRecetteDetails={setShowRecetteDetails}
                 {...recette}
                 handleEditRecette={handleEditRecette}
+                isAuthenticated={isAuthenticated}
               />
             )}
           />

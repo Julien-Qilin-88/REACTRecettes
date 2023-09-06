@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import axios from 'axios'; // Importez axios ici
 import { Button } from 'primereact/button';
 
-export default function Inscription({ setVisible }) {
+export default function Inscription({ setSignupVisible }) {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -38,7 +38,7 @@ export default function Inscription({ setVisible }) {
                 // L'inscription a réussi, redirigez l'utilisateur vers une page de confirmation ou connectez automatiquement l'utilisateur.
                 console.log('Inscription réussie !');
                 // Vous pouvez ajouter ici la redirection ou la connexion automatique.
-                setVisible(false);
+                setSignupVisible(false);
             } else {
                 console.error(response.data.message);
             }
@@ -53,7 +53,7 @@ export default function Inscription({ setVisible }) {
 
                 <div className="p-field flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
 
-                    <span className="p-float-label">
+                    <span className="p-float-label mt-4">
                         <InputText
                             id="username"
                             type="text"
@@ -62,7 +62,7 @@ export default function Inscription({ setVisible }) {
                             onChange={handleChange}
                             autoComplete="username"
                         />
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="username">Pseudo</label>
                     </span>
 
                     <span className="p-float-label">
@@ -75,7 +75,7 @@ export default function Inscription({ setVisible }) {
                             autoComplete="new-password"
                             toggleMask
                         />
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Mot de passe</label>
                     </span>
 
                     <span className="p-float-label">
@@ -88,7 +88,7 @@ export default function Inscription({ setVisible }) {
                             autoComplete="new-password"
                             toggleMask
                         />
-                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <label htmlFor="confirmPassword">Confirme mot de passe</label>
                     </span>
 
                     <span className="p-float-label">
@@ -113,7 +113,7 @@ export default function Inscription({ setVisible }) {
                             value={formData.confirmEmail}
                             onChange={handleChange}
                         />
-                        <label htmlFor="confirmEmail">Confirm Email</label>
+                        <label htmlFor="confirmEmail">Confirme Email</label>
                     </span>
 
 

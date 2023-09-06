@@ -1,20 +1,25 @@
-import { useState } from 'react';
-import { Button } from 'primereact/button';
+import RecetteRandom from './RecetteRandom';
 
-export default function Accueil() {
+export default function Accueil({ randomRecipe }) {
 
-    const [count, setCount] = useState(0);
-
-    const increment = () => {
-        setCount(count + 1);
-    }
 
     return (
-        <div className='p-4'>
-            <h1>Accueil</h1>
-            <p>Bienvenue sur le site de recettes de cuisine</p>
-            <p>Vous avez cliqué {count} fois</p>
-            <Button label="Click" onClick={increment} />
-        </div >
+        <>
+            <h1 className='text-center p-4 mt-0' style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>Bienvenue sur le site d'organisation de repas</h1>
+            <div className='flex flex-row justify-content-around'>
+
+                <div>
+                    <h2>Menu de la semaine</h2>
+                </div>
+
+                <div>
+                    <h2>Recette du jour</h2>
+
+                    <RecetteRandom randomRecipe={randomRecipe} />
+                </div>
+
+            </div>
+        </>
+
     );
-} 
+}

@@ -5,7 +5,7 @@ import ButtonBack from '../Elements/ButtonBack'; // Importe le composant ButtonB
 
 // Composant de détails de recette
 export default function Recette(props) {
-    const { selectedRecette, setShowRecetteDetails, setPage, handleEditRecette, page } = props; // Déstructure les props pour accéder facilement à leurs valeurs
+    const { selectedRecette, setShowRecetteDetails, setPage, handleEditRecette, isAuthenticated, page } = props; // Déstructure les props pour accéder facilement à leurs valeurs
     const [showEditButton, setShowEditButton] = useState(''); // État local pour contrôler la visibilité du bouton "Modifier"
 
     // Effet pour gérer la visibilité du bouton "Modifier" en fonction de la page actuelle
@@ -53,7 +53,7 @@ export default function Recette(props) {
             {setShowRecetteDetails && setPage && <ButtonBack setShowRecetteDetails={setShowRecetteDetails} setPage={setPage} />}
 
             {/* Affiche le bouton "Modifier" si la fonction handleEditRecette est fournie en props */}
-            {handleEditRecette && <Button label="Modifier" onClick={handleClickChangeRecette} style={{ display: showEditButton }} />}
+            {isAuthenticated && <Button label="Modifier" onClick={handleClickChangeRecette} style={{ display: showEditButton }} />}
 
         </Card>
     );

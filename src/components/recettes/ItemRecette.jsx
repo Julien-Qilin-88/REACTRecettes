@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 
 // Composant fonctionnel pour afficher un élément de recette
 const ItemTemplate = (props) => {
-    const { fetchRecetteById, setShowRecetteDetails } = props;
+    const { fetchRecetteById, setShowRecetteDetails, isAuthenticated } = props;
 
     // Gestionnaire de clic pour afficher les détails de la recette
     function handleClick() {
@@ -42,7 +42,7 @@ const ItemTemplate = (props) => {
                             {/* Bouton pour voir les détails de la recette */}
                             <Button label="Voir la recette" onClick={handleClick} />
                             {/* Bouton pour modifier la recette */}
-                            <Button label="Modifier la recette" onClick={handleClickChangeRecette} />
+                            {isAuthenticated && <Button label="Modifier la recette" onClick={handleClickChangeRecette} />}
                         </div>
                     </div>
                 </div>
