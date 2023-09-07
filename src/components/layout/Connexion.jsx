@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import axios from 'axios';
 
-export default function Connexion({ setIsAuthenticated, setSignupVisible }) {
+export default function Connexion({ setIsAuthenticated, setSignupVisible, setLoginVisible, setUser }) {
 
     const [FormDataConnexion, setFormDataConnexion] = useState({
         name: '',
@@ -17,7 +17,7 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible }) {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+
 
         try {
             const response = await axios.post('http://localhost:3001/user/connexion', {
@@ -29,10 +29,15 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible }) {
                 console.log('Connexion réussie !');
                 setIsAuthenticated(true);
                 localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('user', FormDataConnexion.name);
+                setUser(FormDataConnexion.name);
+                window.location.reload();
             } else {
+                e.preventDefault();
                 console.error(response.data.message);
             }
         } catch (error) {
+            e.preventDefault();
             console.error('Erreur lors de la demande de connexion:', error);
         }
     };
@@ -71,7 +76,7 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible }) {
                     <div>
                         <Button type="submit" label="Valider" />
                         {/* je n'ai pas de compte */}
-                        <Button type="button" label="Inscription" onClick={() => setSignupVisible(true)} />
+                        <Button type="button" label="Inscription" onClick={() => { setSignupVisible(true); setLoginVisible(false) }} />
                     </div>
 
                 </div>

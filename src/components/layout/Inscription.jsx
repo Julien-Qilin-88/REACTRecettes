@@ -4,7 +4,7 @@ import { Password } from 'primereact/password';
 import axios from 'axios'; // Importez axios ici
 import { Button } from 'primereact/button';
 
-export default function Inscription({ setSignupVisible }) {
+export default function Inscription({ setSignupVisible, setLoginVisible }) {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -116,8 +116,12 @@ export default function Inscription({ setSignupVisible }) {
                         <label htmlFor="confirmEmail">Confirme Email</label>
                     </span>
 
+                    <div>
+                        <Button type="submit" label="Valider" className="p-mt-2" />
+                        <Button type="button" label="J'ai deja un compte" onClick={() => { setSignupVisible(false); setLoginVisible(true) }} />
 
-                    <Button type="submit" label="Submit" className="p-mt-2" />
+                    </div>
+
                 </div>
 
             </form>

@@ -12,9 +12,12 @@ export default function Header(props) {
     const isAuthenticated = props.isAuthenticated;
 
     const handleLogout = () => {
+        //    actualiser la page
+        window.location.reload();
         // Gérez la déconnexion ici
         props.setIsAuthenticated(false);
         localStorage.removeItem('isAuthenticated', 'false');
+        localStorage.removeItem('user');
     };
 
     const menuItemsUnauthenticated = [
@@ -48,12 +51,12 @@ export default function Header(props) {
                     <div className='flex gap-2'>
                         <Button className='m-2' label="Connexion" icon="pi pi-user" onClick={() => setLoginVisible(true)} />
                         <Dialog header="Connexion" visible={loginVisible} onHide={() => setLoginVisible(false)} style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                            <Connexion setIsAuthenticated={props.setIsAuthenticated} setSignupVisible={setSignupVisible} />
+                            <Connexion setIsAuthenticated={props.setIsAuthenticated} setSignupVisible={setSignupVisible} setLoginVisible={setLoginVisible} />
                         </Dialog>
 
                         <Button className='m-2' label="Inscription" icon="pi pi-user-edit" onClick={() => setSignupVisible(true)} />
                         <Dialog header="Inscription" visible={signupVisible} onHide={() => setSignupVisible(false)} style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                            <Inscription setSignupVisible={setSignupVisible} />
+                            <Inscription setSignupVisible={setSignupVisible} setLoginVisible={setLoginVisible} />
                         </Dialog>
                     </div>
                 }
