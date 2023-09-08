@@ -6,7 +6,6 @@ import SearchEditRecette from './editer_recette/SearchEditRecette';
 
 const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredRecettes }) => {
     const [updatedRecette, setUpdatedRecette] = useState(selectedRecette);
-
     const dsEdit = useRef(null);
 
     const handleUpdateRecette = async (updatedData, recetteId) => {
@@ -21,10 +20,8 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
         document.title = updatedRecette ? updatedRecette.title : 'Édition de recette';
     }, [updatedRecette]);
 
-
     return (
         <>
-
             {selectedRecette && (
                 <Card style={{ width: '100%' }}>
                     <div className='flex gap-4'>
@@ -34,7 +31,6 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                             onSave={(newValue) => {
                                 setUpdatedRecette({ ...updatedRecette, title: newValue });
                                 handleUpdateRecette({ title: newValue }, updatedRecette.id);
-
                             }}
                             elementType="h2"
                             updateRecette={handleUpdateRecette}
@@ -46,8 +42,11 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                         <ElementRecette
                             label="Image"
                             value={<img className='card__image' src={updatedRecette.image} alt={updatedRecette.title} />}
-                            onSave={(newValue) => setUpdatedRecette({ ...updatedRecette, image: newValue })}
-                            elementType="div"
+                            onSave={(newValue) => {
+                                setUpdatedRecette({ ...updatedRecette, image: newValue });
+                                handleUpdateRecette({ image: newValue }, updatedRecette.id);
+                            }}
+                            elementType="img"
                             updateRecette={handleUpdateRecette}
                             recetteId={updatedRecette.id}
                         />
@@ -58,13 +57,12 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                             label="Temps de préparation"
                             value={updatedRecette.tempsDePreparation + ' minutes'}
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, tempsDePreparation: parseInt(newValue) })
+                                setUpdatedRecette({ ...updatedRecette, tempsDePreparation: parseInt(newValue) });
                                 handleUpdateRecette({ tempsDePreparation: parseInt(newValue) }, updatedRecette.id);
                             }}
                             elementType="p"
                             updateRecette={handleUpdateRecette}
                             recetteId={updatedRecette.id}
-
                         />
                     </div>
 
@@ -73,7 +71,7 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                             label="Temps de cuisson"
                             value={updatedRecette.tempsDeCuisson + ' minutes'}
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, tempsDeCuisson: parseInt(newValue) })
+                                setUpdatedRecette({ ...updatedRecette, tempsDeCuisson: parseInt(newValue) });
                                 handleUpdateRecette({ tempsDeCuisson: parseInt(newValue) }, updatedRecette.id);
                             }}
                             elementType="p"
@@ -94,7 +92,6 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                                         newIngredients[index] = newValue;
                                         setUpdatedRecette({ ...updatedRecette, ingredients: newIngredients });
                                         handleUpdateRecette({ ingredients: newIngredients }, updatedRecette.id);
-
                                     }}
                                     elementType="li"
                                     updateRecette={handleUpdateRecette}
@@ -102,7 +99,6 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                                 />
                             ))}
                         </ul>
-
                     </div>
 
                     <div className='flex flex-column gap-4'>
@@ -124,7 +120,6 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                                 />
                             ))}
                         </ol>
-
                     </div>
 
                     <p>Bon appétit !</p>
@@ -137,9 +132,7 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                     <SearchEditRecette recettes={recettes} dsEdit={dsEdit} filteredRecettes={filteredRecettes} setFilteredRecettes={setFilteredRecettes} setSelectedRecette={setUpdatedRecette} />
                 </>
             )}
-
         </>
-
     );
 };
 

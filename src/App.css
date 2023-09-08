@@ -4,3 +4,9 @@
   object-fit: cover;
   object-position: center;
 } */
+.card__image {
+  width: 50%;
+  height: 50%;
+
+
+}

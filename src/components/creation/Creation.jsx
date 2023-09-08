@@ -74,15 +74,6 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         }));
     };
 
-    const handleImageChange = (e) => {
-        const value = e.target.value;
-        setRecette(prevState => ({
-            ...prevState,
-            image: value
-        }));
-    };
-
-
     const addIngredient = () => {
         setRecette(prevState => ({
             ...prevState,
@@ -97,9 +88,29 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         }));
     };
 
+    const onUpload = (e) => {
+        if (e.target.files[0]) {
+            fileToDataUri(e.target.files[0]).then(data =>
+                setRecette(prevState => ({
+                    ...prevState,
+                    image: data
+                }))
+            )
+        }
+
+    };
+
+    const fileToDataUri = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            resolve(event.target.result)
+        };
+        reader.readAsDataURL(file);
+    });
+
     const addRecette = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/recettes',
+            const response = await axios.post('http://localhost:3002/api/recettes',
                 {
                     title: recette.title,
                     description: recette.description,
@@ -172,7 +183,7 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
                         <label htmlFor="image">Image :</label>
-                        <InputText id="image" name="image" onChange={handleImageChange} />
+                        <input type="file" name="image" onChange={onUpload} />
                     </div>
                     <div className="flex flex-column gap-2 ">
                         <label htmlFor="categorie">Catégorie :</label>

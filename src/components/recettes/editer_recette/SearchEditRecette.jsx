@@ -24,7 +24,6 @@ const SearchEditRecette = ({ recettes, filteredRecettes, setFilteredRecettes, ds
         handleSearchEdit(value);
     };
 
-    console.log(searchTermEdit);
 
     return (
         <>

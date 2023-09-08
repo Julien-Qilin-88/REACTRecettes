@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import axios from 'axios'; // Importez axios ici
+import axios from 'axios';
 import { Button } from 'primereact/button';
 
 export default function Inscription({ setSignupVisible, setLoginVisible }) {
@@ -13,6 +13,8 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
         confirmEmail: '',
     });
 
+    const [error, setError] = useState(null);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -21,11 +23,28 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Assurez-vous que les mots de passe correspondent
-        if (formData.password !== formData.confirmPassword) {
-            console.error('Les mots de passe ne correspondent pas.');
-            return; // Arrêtez le traitement si les mots de passe ne correspondent pas.
+        // Valider les champs
+        if (!formData.username || !formData.email || !formData.password) {
+            setError('Veuillez remplir tous les champs.');
+            return;
         }
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Les mots de passe ne correspondent pas.');
+            return;
+        }
+
+        if (formData.password.length < 10) {
+            setError('Le mot de passe doit contenir au moins 10 caractères.');
+            return;
+        }
+
+        if (formData.email !== formData.confirmEmail) {
+            setError('Les adresses email ne correspondent pas.');
+            return;
+        }
+
+
 
         try {
             const response = await axios.post('http://localhost:3001/user/inscription', {
@@ -34,25 +53,22 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                 email: formData.email,
             });
 
-            if (response.status === 200) { // Vérifiez le code de statut HTTP
-                // L'inscription a réussi, redirigez l'utilisateur vers une page de confirmation ou connectez automatiquement l'utilisateur.
+            if (response.status === 200) {
                 console.log('Inscription réussie !');
-                // Vous pouvez ajouter ici la redirection ou la connexion automatique.
                 setSignupVisible(false);
             } else {
-                console.error(response.data.message);
+                setError(response.data.message);
             }
         } catch (error) {
             console.error('Erreur lors de la demande d\'inscription:', error);
+            setError('Une erreur s\'est produite lors de l\'inscription.');
         }
     };
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
-
                 <div className="p-field flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
-
                     <span className="p-float-label mt-4">
                         <InputText
                             id="username"
@@ -92,7 +108,6 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                     </span>
 
                     <span className="p-float-label">
-
                         <InputText
                             id="email"
                             type="email"
@@ -116,14 +131,13 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                         <label htmlFor="confirmEmail">Confirme Email</label>
                     </span>
 
+                    {error && <div className="p-error">{error}</div>}
+
                     <div>
                         <Button type="submit" label="Valider" className="p-mt-2" />
-                        <Button type="button" label="J'ai deja un compte" onClick={() => { setSignupVisible(false); setLoginVisible(true) }} />
-
+                        <Button type="button" label="J'ai déjà un compte" onClick={() => { setSignupVisible(false); setLoginVisible(true) }} />
                     </div>
-
                 </div>
-
             </form>
         </div>
     );

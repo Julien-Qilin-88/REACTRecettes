@@ -4,12 +4,15 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import Connexion from './Connexion';
 import Inscription from './Inscription';
+import { useAuth } from './AuthProvider';
 
 export default function Header(props) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [loginVisible, setLoginVisible] = useState(false); // Pour la boîte de dialogue de connexion
     const [signupVisible, setSignupVisible] = useState(false); // Pour la boîte de dialogue d'inscription
     const isAuthenticated = props.isAuthenticated;
+    const { logout } = useAuth();
+
 
     const handleLogout = () => {
         //    actualiser la page
@@ -18,6 +21,7 @@ export default function Header(props) {
         props.setIsAuthenticated(false);
         localStorage.removeItem('isAuthenticated', 'false');
         localStorage.removeItem('user');
+        logout();
     };
 
     const menuItemsUnauthenticated = [

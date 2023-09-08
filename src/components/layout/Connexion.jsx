@@ -3,8 +3,12 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import axios from 'axios';
+import { useAuth } from '../layout/AuthProvider';
 
-export default function Connexion({ setIsAuthenticated, setSignupVisible, setLoginVisible, setUser }) {
+export default function Connexion({ setSignupVisible, setLoginVisible }) {
+    const { login } = useAuth();
+
+    const [error, setError] = useState(null);
 
     const [FormDataConnexion, setFormDataConnexion] = useState({
         name: '',
@@ -17,36 +21,40 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible, setLog
     };
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
 
+        // Valider les champs
+        if (!FormDataConnexion.name || !FormDataConnexion.password) {
+            setError('Veuillez remplir tous les champs.');
+            return; // Arrêtez le traitement ici, mais ne provoquez pas de re-rendu
+        }
 
         try {
-            const response = await axios.post('http://localhost:3001/user/connexion', {
+            const response = await axios.post(
+                'http://localhost:3001/user/connexion',
+                {
                 name: FormDataConnexion.name,
                 password: FormDataConnexion.password,
-            });
+                }
+            );
 
             if (response.status === 200) {
                 console.log('Connexion réussie !');
-                setIsAuthenticated(true);
-                localStorage.setItem('isAuthenticated', 'true');
-                localStorage.setItem('user', FormDataConnexion.name);
-                setUser(FormDataConnexion.name);
+                login(FormDataConnexion.name);
                 window.location.reload();
             } else {
-                e.preventDefault();
-                console.error(response.data.message);
+                setError(response.data.message)
             }
         } catch (error) {
-            e.preventDefault();
             console.error('Erreur lors de la demande de connexion:', error);
+            setError('Mot de passe ou pseudo incorrect.');
         }
     };
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} method="POST"> 
                 <div className="flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
-
                     <span className="p-float-label mt-4">
                         <InputText
                             id="name"
@@ -58,7 +66,6 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible, setLog
                         />
                         <label htmlFor="name">Pseudo</label>
                     </span>
-
 
                     <span className="p-float-label">
                         <Password
@@ -73,12 +80,20 @@ export default function Connexion({ setIsAuthenticated, setSignupVisible, setLog
                         />
                         <label htmlFor="password">Mot de passe</label>
                     </span>
+
+                    {error && <div className="p-error">{error}</div>}
+
                     <div>
                         <Button type="submit" label="Valider" />
-                        {/* je n'ai pas de compte */}
-                        <Button type="button" label="Inscription" onClick={() => { setSignupVisible(true); setLoginVisible(false) }} />
+                        <Button
+                            type="button"
+                            label="Inscription"
+                            onClick={() => {
+                                setSignupVisible(true);
+                                setLoginVisible(false);
+                            }}
+                        />
                     </div>
-
                 </div>
             </form>
         </div>
