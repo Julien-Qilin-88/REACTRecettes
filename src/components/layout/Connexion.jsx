@@ -33,8 +33,8 @@ export default function Connexion({ setSignupVisible, setLoginVisible }) {
             const response = await axios.post(
                 'http://localhost:3001/user/connexion',
                 {
-                name: FormDataConnexion.name,
-                password: FormDataConnexion.password,
+                    name: FormDataConnexion.name,
+                    password: FormDataConnexion.password,
                 }
             );
 
@@ -53,7 +53,7 @@ export default function Connexion({ setSignupVisible, setLoginVisible }) {
 
     return (
         <div>
-            <form onSubmit={handleSubmit} method="POST"> 
+            <form onSubmit={handleSubmit} method="POST">
                 <div className="flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
                     <span className="p-float-label mt-4">
                         <InputText

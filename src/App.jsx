@@ -86,42 +86,42 @@ function App() {
     // Rendu du composant principal de l'application
     return (
         <AuthProvider>
-        <Layout setPage={setPage} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setUser={setUser} >
-            {page === 'home' && <Accueil randomRecipe={randomRecipe} user={user} />}
-            {page === 'recettes' && !editMode && (
-                <ListRecette
-                    fetchRecetteById={fetchRecetteById}
-                    recettes={recettes}
-                    selectedRecette={selectedRecette}
-                    showRecetteDetails={showRecetteDetails}
-                    setShowRecetteDetails={setShowRecetteDetails}
-                    handleEditRecette={handleEditRecette}
-                    setPage={setPage}
-                    page={page}
-                    filteredRecettes={filteredRecettes}
-                    setFilteredRecettes={setFilteredRecettes}
-                    isAuthenticated={isAuthenticated}
-                />
-            )}
-            {page === 'recettes' && editMode && (
-                <EditRecette
-                    recettes={recettes}
-                    setRecettes={setRecettes}
-                    handleEditRecette={handleEditRecette}
-                    showRecetteDetails={showRecetteDetails}
-                    setShowRecetteDetails={setShowRecetteDetails}
-                    selectedRecette={selectedRecette}
-                    setSelectedRecette={setSelectedRecette}
-                    setPage={setPage}
-                    page={page}
-                    filteredRecettes={filteredRecettes}
-                    setFilteredRecettes={setFilteredRecettes}
-                />
-            )}
-            {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
+            <Layout setPage={setPage} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setUser={setUser} >
+                {page === 'home' && <Accueil randomRecipe={randomRecipe} user={user} />}
+                {page === 'recettes' && !editMode && (
+                    <ListRecette
+                        fetchRecetteById={fetchRecetteById}
+                        recettes={recettes}
+                        selectedRecette={selectedRecette}
+                        showRecetteDetails={showRecetteDetails}
+                        setShowRecetteDetails={setShowRecetteDetails}
+                        handleEditRecette={handleEditRecette}
+                        setPage={setPage}
+                        page={page}
+                        filteredRecettes={filteredRecettes}
+                        setFilteredRecettes={setFilteredRecettes}
+                        isAuthenticated={isAuthenticated}
+                    />
+                )}
+                {page === 'recettes' && editMode && (
+                    <EditRecette
+                        recettes={recettes}
+                        setRecettes={setRecettes}
+                        handleEditRecette={handleEditRecette}
+                        showRecetteDetails={showRecetteDetails}
+                        setShowRecetteDetails={setShowRecetteDetails}
+                        selectedRecette={selectedRecette}
+                        setSelectedRecette={setSelectedRecette}
+                        setPage={setPage}
+                        page={page}
+                        filteredRecettes={filteredRecettes}
+                        setFilteredRecettes={setFilteredRecettes}
+                    />
+                )}
+                {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
 
-            {page === 'menu' && <MenuDuMois />}
-        </Layout>
+                {page === 'menu' && <MenuDuMois />}
+            </Layout>
         </AuthProvider>
     );
 }

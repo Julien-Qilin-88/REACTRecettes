@@ -65,12 +65,11 @@ const ElementRecette = ({ label, value, onSave, elementType }) => {
             ) : (
                 <>
                     {renderValueElement()}
-                        <Button label="Editer" icon="pi pi-file-edit" iconPos="right" text onClick={handleEditClick} />
-                    </>
+                    <Button label="Editer" icon="pi pi-file-edit" iconPos="right" text onClick={handleEditClick} />
+                </>
             )}
         </>
     );
 };
-
 
 export default ElementRecette;
