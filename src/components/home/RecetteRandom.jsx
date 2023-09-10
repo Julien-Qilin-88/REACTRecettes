@@ -9,7 +9,7 @@ const RecetteRandom = (props) => {
     return (
         <>
             {randomRecipe && randomRecipe.image && <Card title={randomRecipe?.title} style={{ width: '100%' }}>
-                <img className='card__image' src={Buffer.from(randomRecipe?.image?.data).toString()} alt={randomRecipe?.title} />
+                <img className='card__image' src={randomRecipe?.image} alt={randomRecipe?.title} />
                 <p>temps de préparation : {randomRecipe?.tempsDePreparation} minutes</p>
                 <p>temps de cuisson : {randomRecipe?.tempsDeCuisson} minutes</p>
 

@@ -42,6 +42,7 @@ const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredR
                         <ElementRecette
                             label="Image"
                             value={<img className='card__image' src={updatedRecette.image} alt={updatedRecette.title} />}
+
                             onSave={(newValue) => {
                                 setUpdatedRecette({ ...updatedRecette, image: newValue });
                                 handleUpdateRecette({ image: newValue }, updatedRecette.id);

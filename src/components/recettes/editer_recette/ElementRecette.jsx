@@ -33,6 +33,8 @@ const ElementRecette = ({ label, value, onSave, elementType }) => {
         }
     };
 
+
+
     const handleFileUpload = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
@@ -40,7 +42,7 @@ const ElementRecette = ({ label, value, onSave, elementType }) => {
         reader.onloadend = () => {
             setEditedValue(reader.result);
         };
-        console.log(file);
+        // console.log(file);
 
     };
 

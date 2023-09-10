@@ -15,7 +15,7 @@ const SearchEditRecette = ({ recettes, filteredRecettes, setFilteredRecettes, ds
         if (dsEdit.current) {
             dsEdit.current.reset();
         }
-        console.log(filteredRecettes);
+
     };
 
     const handleChangeSearchEdit = (e) => {

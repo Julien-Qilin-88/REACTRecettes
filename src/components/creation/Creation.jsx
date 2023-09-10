@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { FileUpload } from 'primereact/fileupload';
 import axios from 'axios';
 
 function Creations({ recettes, setRecettes, handleRecetteCreation }) {
     const [selectedCategories, setSelectedCategories] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [recette, setRecette] = useState({
         title: '',
         description: '',
@@ -13,15 +15,28 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         tempsDeCuisson: 0,
         ingredients: [''],
         instructions: [''],
-        image: '',
-        categorie: '',
+        image: '', // État pour stocker l'extension de l'image
+        categorie: '', // État pour stocker la catégorie
     });
 
     const categorie = ['Entrée', 'Salade', 'Plat', 'Dessert', 'Boisson', 'Sauce', 'Autre'];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Vérifiez si la catégorie est sélectionnée
+        if (!selectedCategories) {
+            console.error('Veuillez sélectionner une catégorie.');
+            return;
+        }
+
+        // Ensuite, ajoutez la recette
         await addRecette();
+
+        // Téléchargez l'image ici avant d'ajouter la recette
+        await handleImageUpload();
+
+
     };
 
     const handleIngredientChange = (index, value) => {
@@ -88,39 +103,54 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         }));
     };
 
-    const onUpload = (e) => {
-        if (e.target.files[0]) {
-            fileToDataUri(e.target.files[0]).then(data =>
-                setRecette(prevState => ({
-                    ...prevState,
-                    image: data
-                }))
-            )
-        }
+    const handleImageUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('image', selectedImage);
+            console.log(selectedImage);
+            await axios.post('http://localhost:3002/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
+            // Obtenez le nom du fichier téléchargé à partir de la réponse
+            const uploadedFileName = selectedImage.name;
+            // Construisez le chemin complet de l'image en utilisant le nom du fichier
+            const imagePath = `http://localhost:3002/images/${uploadedFileName}`;
+
+            setRecette(prevState => ({
+                ...prevState,
+                image: imagePath, // Utilisez le chemin de l'image construit
+            }));
+        } catch (error) {
+            console.error('Erreur lors de la récupération des données :', error);
+        }
     };
 
-    const fileToDataUri = (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            resolve(event.target.result)
-        };
-        reader.readAsDataURL(file);
-    });
-
     const addRecette = async () => {
+
+        // recuperer l'id de la recette qui va etre créée
+        const recetteId = recettes.length + 1;
+        // recuperer l'extension de l'image
+        const imageExtension = selectedImage.name.split('.').pop();
+        // recuperer le nom de l'image sans l'extension
+        const imageName = selectedImage.name.split('.').slice(0, -1).join('.');
+        // construire le nom de l'image avec l'id de la recette et l'extension
+        const imageFullName = `${imageName}-${recetteId}.${imageExtension}`;
+
+
+        const imagePath = `http://localhost:3002/images/${imageFullName}`;
+
+
         try {
-            const response = await axios.post('http://localhost:3002/api/recettes',
-                {
-                    title: recette.title,
-                    description: recette.description,
-                    tempsDePreparation: recette.tempsDePreparation,
-                    tempsDeCuisson: recette.tempsDeCuisson,
-                    ingredients: recette.ingredients,
-                    instructions: recette.instructions,
-                    image: recette.image,
-                    categorie: selectedCategories,
-                });
+            const response = await axios.post('http://localhost:3002/api/recettes', {
+                ...recette,
+                categorie: selectedCategories,
+                image: imagePath,
+
+
+            });
 
             setRecettes([...recettes, response.data]);
 
@@ -132,9 +162,10 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
 
     return (
         <>
+
             <h1>Créations</h1>
 
-            <form onSubmit={handleSubmit} className="flex flex-row gap-4 flex-wrap">
+            <form onSubmit={handleSubmit} className="flex flex-row gap-4 flex-wrap" method="POST">
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
@@ -183,13 +214,15 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
                         <label htmlFor="image">Image :</label>
-                        <input type="file" name="image" onChange={onUpload} />
+                        <FileUpload mode='basic' name="image" accept="image/*" maxFileSize={1000000} onSelect={(e) => setSelectedImage(e.files[0])} />
                     </div>
                     <div className="flex flex-column gap-2 ">
                         <label htmlFor="categorie">Catégorie :</label>
-                        <Dropdown value={selectedCategories} options={categorie} onChange={(e) => setSelectedCategories(e.value)} placeholder="Sélectionner une catégorie" />
-                        <Button type="submit" label="Envoyer" />
+                        <Dropdown
+                            name='categorie' value={selectedCategories} options={categorie} onChange={(e) => setSelectedCategories(e.value)} placeholder="Sélectionner une catégorie" />
+
                     </div>
+                    <Button type="submit" label="Envoyer" />
                 </div>
 
             </form>

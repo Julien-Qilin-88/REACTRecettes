@@ -1,7 +1,7 @@
 import React from 'react';
 import { Rating } from 'primereact/rating';
 import { Button } from 'primereact/button';
-import { Buffer } from 'buffer';
+
 
 // Composant fonctionnel pour afficher un élément de recette
 const ItemTemplate = (props) => {
@@ -18,12 +18,13 @@ const ItemTemplate = (props) => {
         props.handleEditRecette(props.id); // Utilise props.handleEditRecette pour appeler la fonction de modification de recette
     }
 
+
     // Rendu du composant
     return (
         <>
             <div className="col-12">
                 <div className="flex flex-column xl:flex-row xl:align-items-start p-2 gap-4">
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:flex mx-auto border-round" src={Buffer.from(props.image.data).toString()} alt={props.title} />
+                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:flex mx-auto border-round" src={props.image} alt={props.title} />
                     <div className="flex flex-column lg:flex-row justify-content-between align-items-center xl:align-items-start lg:flex-1 gap-4">
                         <div className="flex flex-column align-items-center lg:align-items-start gap-3">
                             <div className="flex flex-column gap-1">
