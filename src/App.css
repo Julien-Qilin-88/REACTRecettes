@@ -10,3 +10,14 @@
 
 
 }
+.error {
+  color: red;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.notError {
+  color: green;
+  font-size: 1rem;
+  margin-top: 5px;
+}

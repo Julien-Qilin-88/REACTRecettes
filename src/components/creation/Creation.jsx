@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
 import axios from 'axios';
+import './creation.css'
+
 
 function Creations({ recettes, setRecettes, handleRecetteCreation }) {
     const [selectedCategories, setSelectedCategories] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
     const [recette, setRecette] = useState({
         title: '',
         description: '',
@@ -15,28 +15,53 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         tempsDeCuisson: 0,
         ingredients: [''],
         instructions: [''],
-        image: '', // État pour stocker l'extension de l'image
-        categorie: '', // État pour stocker la catégorie
+        image: '',
     });
 
     const categorie = ['Entrée', 'Salade', 'Plat', 'Dessert', 'Boisson', 'Sauce', 'Autre'];
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Vérifiez si la catégorie est sélectionnée
-        if (!selectedCategories) {
-            console.error('Veuillez sélectionner une catégorie.');
-            return;
+        // Assurez-vous que les données du formulaire sont formatées en tant qu'objet JSON
+        // Assurez-vous que les données du formulaire sont formatées en tant qu'objet JSON
+        const userId = Number(localStorage.getItem('userId')); // Récupérez l'ID de l'utilisateur à partir du localStorage
+        const user = localStorage.getItem('user');
+        const formData = {
+            idUser: userId, // Récupérez l'ID de l'utilisateur à partir du localStorage
+            title: recette.title,
+            description: recette.description,
+            tempsDePreparation: recette.tempsDePreparation,
+            tempsDeCuisson: recette.tempsDeCuisson,
+            ingredients: recette.ingredients,
+            instructions: recette.instructions,
+            image: recette.image,
+            categorie: selectedCategories,
+            auteur: user
+        };
+
+        try {
+            // Utilisez Axios pour envoyer les données au serveur au format JSON
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post('http://localhost:3002/api/recettes', formData, {
+                headers: {
+                    'Content-Type': 'application/json', // Indiquez que le contenu est au format JSON
+                    'Authorization': `Bearer ${token}` // Attachez le token d'authentification à l'en-tête de la requête
+                }
+            });
+
+            // Faites quelque chose avec la réponse si nécessaire
+            console.log('Réponse du serveur:', response.data);
+
+            // Mettez à jour l'état ou effectuez toute autre action nécessaire
+            setRecettes([...recettes, response.data]);
+            handleRecetteCreation();
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi des données :', error);
+            // Gérez l'erreur ici, affichez un message d'erreur à l'utilisateur, etc.
         }
-
-        // Ensuite, ajoutez la recette
-        await addRecette();
-
-        // Téléchargez l'image ici avant d'ajouter la recette
-        await handleImageUpload();
-
-
     };
 
     const handleIngredientChange = (index, value) => {
@@ -103,95 +128,47 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
         }));
     };
 
-    const handleImageUpload = async () => {
-        try {
-            const formData = new FormData();
-            formData.append('image', selectedImage);
-            console.log(selectedImage);
-            await axios.post('http://localhost:3002/api/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            // Obtenez le nom du fichier téléchargé à partir de la réponse
-            const uploadedFileName = selectedImage.name;
-            // Construisez le chemin complet de l'image en utilisant le nom du fichier
-            const imagePath = `http://localhost:3002/images/${uploadedFileName}`;
-
-            setRecette(prevState => ({
-                ...prevState,
-                image: imagePath, // Utilisez le chemin de l'image construit
-            }));
-        } catch (error) {
-            console.error('Erreur lors de la récupération des données :', error);
-        }
+    const handleImageChange = (e) => {
+        const value = e.target.value;
+        setRecette(prevState => ({
+            ...prevState,
+            image: value
+        }));
     };
 
-    const addRecette = async () => {
-
-        // recuperer l'id de la recette qui va etre créée
-        const recetteId = recettes.length + 1;
-        // recuperer l'extension de l'image
-        const imageExtension = selectedImage.name.split('.').pop();
-        // recuperer le nom de l'image sans l'extension
-        const imageName = selectedImage.name.split('.').slice(0, -1).join('.');
-        // construire le nom de l'image avec l'id de la recette et l'extension
-        const imageFullName = `${imageName}-${recetteId}.${imageExtension}`;
-
-
-        const imagePath = `http://localhost:3002/images/${imageFullName}`;
-
-
-        try {
-            const response = await axios.post('http://localhost:3002/api/recettes', {
-                ...recette,
-                categorie: selectedCategories,
-                image: imagePath,
-
-
-            });
-
-            setRecettes([...recettes, response.data]);
-
-            handleRecetteCreation();
-        } catch (error) {
-            console.error('Erreur lors de la récupération des données :', error);
-        }
-    };
 
     return (
-        <>
+        <div className='creation'>
 
             <h1>Créations</h1>
-
+            <span className='creation__obligatoire'>* champs obligatoire</span>
             <form onSubmit={handleSubmit} className="flex flex-row gap-4 flex-wrap" method="POST">
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="title">Nom :</label>
-                        <InputText id="title" name="title" required onChange={handleTitlelChange} />
+                        <label htmlFor="title">Titre <span className='creation__obligatoire'>*</span> :</label>
+                        <InputText id="title" name="name" required onChange={handleTitlelChange} />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="description">Description :</label>
+                        <label htmlFor="description">Description <span className='creation__obligatoire'>*</span> :</label>
                         <InputText id="description" name="description" required onChange={handleDescriptionChange} />
                     </div>
                 </div>
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="tempsDePreparation">Temps de préparation :</label>
+                        <label htmlFor="tempsDePreparation">Temps de préparation <span className='creation__obligatoire'>*</span> :</label>
                         <InputText id="tempsDePreparation" name="tempsDePreparation" required onChange={handleTempsDePreparationChange} />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="tempsDeCuisson">Temps de cuisson :</label>
+                        <label htmlFor="tempsDeCuisson">Temps de cuisson <span className='creation__obligatoire'>*</span> :</label>
                         <InputText id="tempsDeCuisson" name="tempsDeCuisson" required onChange={handleTempsDeCuissonChange} />
                     </div>
                 </div>
 
                 <div className="col-6 col-sm-3">
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="ingredients">Ingrédients :</label>
+                        <label htmlFor="ingredients">Ingrédients <span className='creation__obligatoire'>*</span> :</label>
                         {recette.ingredients.map((ingredient, index) => (
                             <div key={index}>
                                 <InputText value={ingredient} onChange={e => handleIngredientChange(index, e.target.value)} />
@@ -201,7 +178,7 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                         <Button type="button" onClick={addIngredient} label="Ajouter Ingrédient" />
                     </div>
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="instructions">Instructions :</label>
+                        <label htmlFor="instructions">Instructions <span className='creation__obligatoire'>*</span> :</label>
                         {recette.instructions.map((instruction, index) => (
                             <div key={index}>
                                 <InputText value={instruction} onChange={e => handleInstructionChange(index, e.target.value)} />
@@ -212,12 +189,15 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                 </div>
 
                 <div className="col-6 col-sm-3">
+
                     <div className="flex flex-column gap-2 ">
                         <label htmlFor="image">Image :</label>
-                        <FileUpload mode='basic' name="image" accept="image/*" maxFileSize={1000000} onSelect={(e) => setSelectedImage(e.files[0])} />
+                        <span className='creation__obligatoire'>exemple : https://www.exemple.com/images/monimage.png/</span>
+                        <InputText id="image" name="image" onChange={handleImageChange} />
                     </div>
+
                     <div className="flex flex-column gap-2 ">
-                        <label htmlFor="categorie">Catégorie :</label>
+                        <label htmlFor="categorie">Catégorie <span className='creation__obligatoire'>*</span> :</label>
                         <Dropdown
                             name='categorie' value={selectedCategories} options={categorie} onChange={(e) => setSelectedCategories(e.value)} placeholder="Sélectionner une catégorie" />
 
@@ -226,7 +206,8 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                 </div>
 
             </form>
-        </>
+            {error && <div className="p-error">{error}</div>}
+        </div>
     );
 }
 

@@ -5,7 +5,7 @@ import ButtonBack from '../Elements/ButtonBack'; // Importe le composant ButtonB
 
 // Composant de détails de recette
 export default function Recette(props) {
-    const { selectedRecette, setShowRecetteDetails, setPage, handleEditRecette, isAuthenticated, page } = props; // Déstructure les props pour accéder facilement à leurs valeurs
+    const { recettes, selectedRecette, setShowRecetteDetails, setPage, handleEditRecette, isAuthenticated, page } = props; // Déstructure les props pour accéder facilement à leurs valeurs
     const [showEditButton, setShowEditButton] = useState(''); // État local pour contrôler la visibilité du bouton "Modifier"
 
     // Effet pour gérer la visibilité du bouton "Modifier" en fonction de la page actuelle
@@ -27,6 +27,13 @@ export default function Recette(props) {
         handleEditRecette(selectedRecette.id); // Appelle la fonction pour modifier la recette
     }
 
+    //recuperer l'id de l'utilisateur connecté
+    const userId = Number(localStorage.getItem('userId'));
+    const user = localStorage.getItem('user');
+
+    // je voudrais recuperer l'id de la recette selectionnée
+    const recette = recettes.find((recette) => recette.id === selectedRecette.id);
+    const isOwner = recette && (recette.idUser === userId || user === 'admin');
     // Rendu du composant de détails de recette
     return (
         <Card title={selectedRecette.title} style={{ width: '100%' }}>
@@ -47,13 +54,18 @@ export default function Recette(props) {
                     <li key={index}>{instruction}</li>
                 ))}
             </ol>
-            <p>Bon appétit !</p>
+
+            <p><span style={{ fontWeight: 'bold' }}>{selectedRecette.auteur}</span> vous souhaite une bonne dégustation !</p>
 
             {/* Affiche le bouton de retour et de navigation si les fonctions sont fournies en props */}
             {setShowRecetteDetails && setPage && <ButtonBack setShowRecetteDetails={setShowRecetteDetails} setPage={setPage} />}
 
             {/* Affiche le bouton "Modifier" si la fonction handleEditRecette est fournie en props */}
-            {isAuthenticated && <Button label="Modifier" onClick={handleClickChangeRecette} style={{ display: showEditButton }} />}
+            {isAuthenticated && isOwner ? (
+                <Button label="Modifier la recette" onClick={handleClickChangeRecette} disabled={!isOwner} />
+            ) : (
+                null
+            )}
 
         </Card>
     );

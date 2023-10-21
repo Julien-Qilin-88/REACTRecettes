@@ -1,137 +1,190 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Card } from 'primereact/card';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 import ElementRecette from './editer_recette/ElementRecette';
 import axios from 'axios';
-import SearchEditRecette from './editer_recette/SearchEditRecette';
 
-const EditRecette = ({ selectedRecette, recettes, filteredRecettes, setFilteredRecettes }) => {
-    const [updatedRecette, setUpdatedRecette] = useState(selectedRecette);
-    const dsEdit = useRef(null);
+const EditRecette = ({ selectedRecette }) => {
+    // États locaux pour gérer la recette, les ingrédients, les instructions, etc.
+    const [recette, setRecette] = useState(selectedRecette);
+    const [ingredient, setIngredient] = useState("");
+    const [instruction, setInstruction] = useState("");
 
-    const handleUpdateRecette = async (updatedData, recetteId) => {
+
+    // Fonction pour mettre à jour la recette
+    const handleUpdateRecette = (field, value, shouldUpdate = true) => {
+        // Mettez à jour la recette en fonction du champ et de la valeur fournis
+        setRecette((oldRecette) => {
+            const updatedRecette = { ...oldRecette, [field]: value };
+            if (shouldUpdate) {
+                updateRecette(updatedRecette); // Appelez la fonction d'API pour mettre à jour la recette
+            }
+            return updatedRecette;
+        });
+    };
+
+    // Fonction pour supprimer un élément de la recette (ingrédient ou instruction)
+    const handleDeleteElement = (field, index) => {
+        // Supprimez l'élément du champ spécifié à l'index donné
+        setRecette((oldRecette) => {
+            const updatedField = [...oldRecette[field]];
+            updatedField.splice(index, 1);
+            const updatedRecette = { ...oldRecette, [field]: updatedField };
+            updateRecette(updatedRecette); // Appelez la fonction d'API pour mettre à jour la recette
+            return updatedRecette;
+        });
+    };
+
+    // Fonction pour mettre à jour la recette via une requête API
+    const updateRecette = async (updatedRecette) => {
         try {
-            await axios.put(`http://localhost:3002/api/recettes/${recetteId}`, updatedData);
+            // Effectuez une requête PUT vers le serveur avec la recette mise à jour
+            await axios.put(`http://localhost:3002/api/recettes/${updatedRecette.id}`, updatedRecette);
         } catch (error) {
-            console.error('Erreur lors de la mise à jour de la recette :', error);
+            console.error('Erreur lors de la mise à jour de la recette:', error);
+            // Traitez les erreurs ici, par exemple, affichez un message d'erreur à l'utilisateur.
         }
     };
 
-    useEffect(() => {
-        document.title = updatedRecette ? updatedRecette.title : 'Édition de recette';
-    }, [updatedRecette]);
+
+    const handleDeleteRecette = async () => {
+        await axios.delete(`http://localhost:3002/api/recettes/${recette.id}`);
+    }
+
+    //recuperer l'id de l'utilisateur connecté
+    const userId = Number(localStorage.getItem('userId'));
+    const user = localStorage.getItem('user');
+
+
+    //je dois pouvoir supprimer uniquement mes recettes
+    const isOwner = recette && (recette.idUser === userId || user === 'admin');
 
     return (
         <>
-            {selectedRecette && (
+            {recette && (
                 <Card style={{ width: '100%' }}>
                     <div className='flex gap-4'>
                         <ElementRecette
                             label="Titre"
-                            value={updatedRecette.title}
+                            value={recette.title}
+
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, title: newValue });
-                                handleUpdateRecette({ title: newValue }, updatedRecette.id);
+                                handleUpdateRecette('title', newValue, true)
                             }}
                             elementType="h2"
-                            updateRecette={handleUpdateRecette}
-                            recetteId={updatedRecette.id}
+                        />
+                    </div>
+                    <div className='flex gap-4'>
+                        <ElementRecette
+                            label="Image"
+                            value={recette.image}
+                            onSave={(newValue) => {
+                                handleUpdateRecette('image', newValue, true)
+                            }}
+                            elementType="img"
                         />
                     </div>
 
                     <div className='flex gap-4'>
                         <ElementRecette
-                            label="Image"
-                            value={<img className='card__image' src={updatedRecette.image} alt={updatedRecette.title} />}
-
+                            label="Description"
+                            value={recette.description}
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, image: newValue });
-                                handleUpdateRecette({ image: newValue }, updatedRecette.id);
+                                handleUpdateRecette('description', newValue, true)
                             }}
-                            elementType="img"
-                            updateRecette={handleUpdateRecette}
-                            recetteId={updatedRecette.id}
                         />
                     </div>
 
                     <div className='flex gap-4'>
                         <ElementRecette
                             label="Temps de préparation"
-                            value={updatedRecette.tempsDePreparation + ' minutes'}
+                            value={recette.tempsDePreparation + ' minutes'}
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, tempsDePreparation: parseInt(newValue) });
-                                handleUpdateRecette({ tempsDePreparation: parseInt(newValue) }, updatedRecette.id);
+                                handleUpdateRecette('tempsDePreparation', newValue, true)
                             }}
-                            elementType="p"
-                            updateRecette={handleUpdateRecette}
-                            recetteId={updatedRecette.id}
                         />
                     </div>
 
                     <div className='flex gap-4'>
                         <ElementRecette
                             label="Temps de cuisson"
-                            value={updatedRecette.tempsDeCuisson + ' minutes'}
+                            value={recette.tempsDeCuisson + ' minutes'}
                             onSave={(newValue) => {
-                                setUpdatedRecette({ ...updatedRecette, tempsDeCuisson: parseInt(newValue) });
-                                handleUpdateRecette({ tempsDeCuisson: parseInt(newValue) }, updatedRecette.id);
+                                handleUpdateRecette('tempsDeCuisson', newValue, true)
                             }}
-                            elementType="p"
-                            updateRecette={handleUpdateRecette}
-                            recetteId={updatedRecette.id}
                         />
                     </div>
 
                     <div className='flex flex-column gap-4'>
                         <h3>Ingrédients</h3>
                         <ul>
-                            {updatedRecette.ingredients && updatedRecette.ingredients.map((ingredient, index) => (
+                            {recette.ingredients && recette.ingredients.map((ingredient, index) => (
                                 <ElementRecette
                                     key={index}
                                     value={ingredient}
                                     onSave={(newValue) => {
-                                        const newIngredients = [...updatedRecette.ingredients];
-                                        newIngredients[index] = newValue;
-                                        setUpdatedRecette({ ...updatedRecette, ingredients: newIngredients });
-                                        handleUpdateRecette({ ingredients: newIngredients }, updatedRecette.id);
+                                        let ingredients = [...recette.ingredients]
+                                        ingredients[index] = ingredient;
+                                        handleUpdateRecette('ingredients', ingredients, true)
                                     }}
                                     elementType="li"
-                                    updateRecette={handleUpdateRecette}
-                                    recetteId={updatedRecette.id}
+                                    onDelete={() => handleDeleteElement('ingredients', index)}
                                 />
                             ))}
                         </ul>
+                        <div>
+                            <InputText
+                                type="text"
+                                placeholder="Ajouter un ingrédient"
+                                value={ingredient}
+                                onChange={(e) => setIngredient(e.target.value)}
+                            />
+                            <Button
+                                onClick={() => {
+                                    handleUpdateRecette('ingredients', [...recette.ingredients, ingredient], true);
+                                    setIngredient("");
+                                }}
+                                label="Ajouter" />
+                        </div>
                     </div>
 
                     <div className='flex flex-column gap-4'>
                         <h3>Instructions</h3>
                         <ol>
-                            {updatedRecette.instructions && updatedRecette.instructions.map((instruction, index) => (
+                            {recette.instructions && recette.instructions?.map((instruction, index) => (
                                 <ElementRecette
                                     key={index}
                                     value={instruction}
                                     onSave={(newValue) => {
-                                        const newInstructions = [...updatedRecette.instructions];
-                                        newInstructions[index] = newValue;
-                                        setUpdatedRecette({ ...updatedRecette, instructions: newInstructions });
-                                        handleUpdateRecette({ instructions: newInstructions }, updatedRecette.id);
+                                        let instructions = [...recette.instructions];
+                                        instructions[index] = instruction;
+                                        handleUpdateRecette('instructions', instructions, true);
                                     }}
                                     elementType="li"
-                                    updateRecette={handleUpdateRecette}
-                                    recetteId={updatedRecette.id}
+                                    onDelete={() => handleDeleteElement('instructions', index)}
                                 />
                             ))}
                         </ol>
+                        <div>
+                            <InputText
+                                type="text"
+                                placeholder="Ajouter une instruction"
+                                value={instruction}
+                                onChange={(e) => setInstruction(e.target.value)}
+                            />
+                            <Button onClick={() => {
+                                handleUpdateRecette('instructions', [...recette.instructions, instruction], true);
+                                setInstruction("");
+                            }} label="Ajouter" />
+                        </div>
                     </div>
 
+                    <div className='flex gap-4'>
+                        <Button onClick={handleDeleteRecette} label="Supprimer la recette" disabled={!isOwner} />
+                    </div>
                     <p>Bon appétit !</p>
                 </Card>
-            )}
-
-            {!selectedRecette && (
-                <>
-                    <p>Veuillez sélectionner une recette à éditer</p>
-                    <SearchEditRecette recettes={recettes} dsEdit={dsEdit} filteredRecettes={filteredRecettes} setFilteredRecettes={setFilteredRecettes} setSelectedRecette={setUpdatedRecette} />
-                </>
             )}
         </>
     );

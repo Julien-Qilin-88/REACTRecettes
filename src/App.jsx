@@ -6,7 +6,9 @@ import ListRecette from './components/recettes/ListRecette';
 import Creation from './components/creation/Creation';
 import EditRecette from './components/recettes/EditRecette';
 import MenuDuMois from './components/menu_du_mois/MenuDuMois';
+import Profil from './components/Profil/Profil';
 import { AuthProvider } from './components/layout/AuthProvider';
+
 
 import axios from 'axios'; // Importe le module Axios pour les requêtes HTTP
 import { useState, useEffect } from 'react'; // Importe les modules React nécessaires
@@ -27,12 +29,24 @@ function App() {
     // je voudrais recuperer le name de l'utilisateur connecté
     const [user, setUser] = useState(localStorage.getItem('user'));
 
+
     // Effet pour récupérer les recettes à partir de l'API au chargement de l'application
     useEffect(() => {
         const fetchRecettes = async () => {
             try {
                 const response = await axios.get('http://localhost:3002/api/recettes');
-                setRecettes(response.data);
+
+                const recettesWithIsOwner = response.data.map((recette) => {
+                    if (recette.idUser === Number(localStorage.getItem('userId')) || user === 'admin') {
+                        return { ...recette, isOwner: true };
+                    } else {
+                        return { ...recette, isOwner: false };
+                    }
+                });
+
+
+
+                setRecettes(recettesWithIsOwner);
             } catch (error) {
                 console.error('Erreur lors de la récupération des données :', error);
             }
@@ -121,6 +135,8 @@ function App() {
                 {page === 'creation' && <Creation recettes={recettes} setRecettes={setRecettes} handleRecetteCreation={handleRecetteCreation} />}
 
                 {page === 'menu' && <MenuDuMois />}
+
+                {page === 'profil' && <Profil />}
             </Layout>
         </AuthProvider>
     );

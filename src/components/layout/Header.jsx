@@ -10,18 +10,16 @@ export default function Header(props) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [loginVisible, setLoginVisible] = useState(false); // Pour la boîte de dialogue de connexion
     const [signupVisible, setSignupVisible] = useState(false); // Pour la boîte de dialogue d'inscription
-    const isAuthenticated = props.isAuthenticated;
-    const { logout } = useAuth();
-
+    const { isAuthenticated, logout } = useAuth();
 
     const handleLogout = () => {
-        //    actualiser la page
-        window.location.reload();
         // Gérez la déconnexion ici
-        props.setIsAuthenticated(false);
-        localStorage.removeItem('isAuthenticated', 'false');
+        logout(); // Utilisez la fonction logout du contexte d'authentification
+        localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('user');
-        logout();
+        localStorage.removeItem('token');
+        // actualisez la page ici si nécessaire
+        window.location.reload();
     };
 
     const menuItemsUnauthenticated = [

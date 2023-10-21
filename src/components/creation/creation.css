@@ -1,0 +1,7 @@
+.creation {
+    padding: 2rem;
+}
+
+.creation__obligatoire {
+    color: red;
+}

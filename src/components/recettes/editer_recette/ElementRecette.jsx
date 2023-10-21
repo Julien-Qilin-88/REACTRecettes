@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 
-const ElementRecette = ({ label, value, onSave, elementType }) => {
+const ElementRecette = ({ label, value, onSave, elementType, onDelete, onSelect }) => {
     const [editing, setEditing] = useState(false);
     const [editedValue, setEditedValue] = useState(value);
 
@@ -20,47 +20,41 @@ const ElementRecette = ({ label, value, onSave, elementType }) => {
         setEditing(false);
     };
 
+    const handleDeleteClick = () => {
+        onDelete();
+    };
+
     const renderValueElement = () => {
         switch (elementType) {
             case 'h2':
-                return <h2>{label}: {editedValue}</h2>;
+                return <h2>{label}: {value}</h2>;
             case 'li':
-                return <li>{editedValue}</li>;
+                return (
+                    <div>
+                        <li>{value}</li>
+
+                    </div>
+                );
             case 'img':
-                return <img className='card__image' src={editedValue} alt={label} />;
+                return (
+                    <img className='card__image' src={value} alt={label} />
+                );
             default:
-                return <p>{label}: {editedValue}</p>;
+                return <p>{label}: {value}</p>;
         }
-    };
-
-
-
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-            setEditedValue(reader.result);
-        };
-        // console.log(file);
-
     };
 
     return (
         <>
             {editing ? (
                 <div>
-                    {elementType !== 'img' && (
+                    {elementType && (
                         <>
                             <label htmlFor="title">Modifier {label}</label>
                             <InputText value={editedValue} onChange={(e) => setEditedValue(e.target.value)} />
                         </>
                     )}
-                    {elementType === 'img' && (
-                        <>
-                            <input type="file" name="image" onChange={(e) => handleFileUpload(e)} />
-                        </>
-                    )}
+
                     <Button label="Mettre à jour" icon="pi pi-check" iconPos="right" text onClick={handleSaveClick} />
                     <Button label="Annuler" icon="pi pi-times" iconPos="right" text onClick={handleCancelClick} />
                 </div>
@@ -68,6 +62,9 @@ const ElementRecette = ({ label, value, onSave, elementType }) => {
                 <>
                     {renderValueElement()}
                     <Button label="Editer" icon="pi pi-file-edit" iconPos="right" text onClick={handleEditClick} />
+                        {elementType === 'li' && (
+                            <Button label="Supprimer" icon="pi pi-trash" iconPos="right" text onClick={handleDeleteClick} />
+                        )}
                 </>
             )}
         </>

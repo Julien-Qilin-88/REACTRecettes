@@ -1,11 +1,10 @@
 import React from 'react';
-import { Rating } from 'primereact/rating';
 import { Button } from 'primereact/button';
 
 
 // Composant fonctionnel pour afficher un élément de recette
 const ItemTemplate = (props) => {
-    const { fetchRecetteById, setShowRecetteDetails, isAuthenticated } = props;
+    const { fetchRecetteById, setShowRecetteDetails, isAuthenticated, recettes } = props;
 
     // Gestionnaire de clic pour afficher les détails de la recette
     function handleClick() {
@@ -15,10 +14,22 @@ const ItemTemplate = (props) => {
 
     // Gestionnaire de clic pour modifier la recette
     const handleClickChangeRecette = () => {
-        props.handleEditRecette(props.id); // Utilise props.handleEditRecette pour appeler la fonction de modification de recette
-    }
+
+        props.handleEditRecette(props.id);
+
+    };
+    //recuperer l'id de l'utilisateur connecté
+    const userId = Number(localStorage.getItem('userId'));
+    const user = localStorage.getItem('user');
 
 
+
+
+    const recette = recettes.find((recette) => recette.id === props.id);
+
+    const isOwner = recette && (recette.idUser === userId || user === 'admin');
+
+    console.log(recette);
     // Rendu du composant
     return (
         <>
@@ -32,19 +43,28 @@ const ItemTemplate = (props) => {
                                 <div className="text-700">{props.description}</div>
                             </div>
                             <div className="flex flex-column gap-2">
-                                {/* Affichage de la note de la recette */}
-                                <Rating value={4} readOnly cancel={false}></Rating>
+                                {/* Affichage de la note de la recette
+                                <Rating value={4} readOnly cancel={false}></Rating> */}
                                 <span className="flex align-items-center gap-2">
                                     {/* Affichage de la catégorie de la recette */}
                                     <span className="font-semibold">{props.categorie}</span>
                                 </span>
                             </div>
+                            <div className="flex flex-column gap-2">
+
+                                <span className="font-semibold">Posté par {props.auteur}</span>
+                            </div>
                         </div>
                         <div className="flex flex-row lg:flex-row align-items-center lg:align-items-end gap-4 lg:gap-2">
                             {/* Bouton pour voir les détails de la recette */}
                             <Button label="Voir la recette" onClick={handleClick} />
-                            {/* Bouton pour modifier la recette */}
-                            {isAuthenticated && <Button label="Modifier la recette" onClick={handleClickChangeRecette} />}
+                            {/* Bouton pour modifier la recette afficher si je suis connecter et que recette.isowner = true je voudrais aussi changer le label*/}
+                            {isAuthenticated && isOwner ? (
+                                <Button label="Modifier la recette" onClick={handleClickChangeRecette} disabled={!isOwner} />
+                            ) : (
+                                null
+                            )}
+
                         </div>
                     </div>
                 </div>

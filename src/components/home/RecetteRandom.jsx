@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'primereact/card';
-import { Buffer } from 'buffer';
+
 
 const RecetteRandom = (props) => {
     const { randomRecipe } = props;
@@ -27,7 +27,7 @@ const RecetteRandom = (props) => {
                 ))}
             </ol>
 
-            <p>Bon appétit !</p>
+                <p><span style={{ fontWeight: 'bold' }}>{randomRecipe?.auteur}</span> vous souhaite une bonne dégustation !</p>
             </Card>
             }
         </>
