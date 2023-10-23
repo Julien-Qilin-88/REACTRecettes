@@ -136,7 +136,7 @@ function App() {
 
                 {page === 'menu' && <MenuDuMois />}
 
-                {page === 'profil' && <Profil />}
+                {page === 'profil' && <Profil setPage={setPage} />}
             </Layout>
         </AuthProvider>
     );

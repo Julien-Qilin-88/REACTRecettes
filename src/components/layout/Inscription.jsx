@@ -56,6 +56,7 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
             if (response.status === 200) {
                 console.log('Inscription réussie !');
                 setSignupVisible(false);
+                setLoginVisible(true);
             } else {
                 setError(response.data.message);
             }
@@ -66,10 +67,11 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div className="p-field flex flex-column gap-5 p-mb-5 justify-content-center align-items-center">
-                    <span className="p-float-label mt-4">
+        <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mb-5">
+            <form onSubmit={handleSubmit} className="p-d-flex p-flex-column p-fluid">
+
+                <div className="p-field mb-3">
+                    <label htmlFor="username">Pseudo :</label>
                         <InputText
                             id="username"
                             type="text"
@@ -77,11 +79,13 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                             value={formData.username}
                             onChange={handleChange}
                             autoComplete="username"
-                        />
-                        <label htmlFor="username">Pseudo</label>
-                    </span>
 
-                    <span className="p-float-label">
+                    />
+
+                </div>
+
+                <div className="p-field mb-3">
+                    <label htmlFor="password">Mot de passe :</label>
                         <Password
                             id="password"
                             name="password"
@@ -90,11 +94,12 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                             onChange={handleChange}
                             autoComplete="new-password"
                             toggleMask
-                        />
-                        <label htmlFor="password">Mot de passe</label>
-                    </span>
+                    />
 
-                    <span className="p-float-label">
+                </div>
+
+                <div className="p-field mb-3">
+                    <label htmlFor="confirmPassword">Confirmer mot de passe :</label>
                         <Password
                             id="confirmPassword"
                             name="confirmPassword"
@@ -104,10 +109,11 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                             autoComplete="new-password"
                             toggleMask
                         />
-                        <label htmlFor="confirmPassword">Confirme mot de passe</label>
-                    </span>
 
-                    <span className="p-float-label">
+                </div>
+
+                <div className="p-field mb-3">
+                    <label htmlFor="email">Email :</label>
                         <InputText
                             id="email"
                             type="email"
@@ -116,10 +122,11 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                             value={formData.email}
                             onChange={handleChange}
                         />
-                        <label htmlFor="email">Email</label>
-                    </span>
 
-                    <span className="p-float-label">
+                </div>
+
+                <div className="p-field mb-3">
+                    <label htmlFor="confirmEmail">Confirmer Email :</label>
                         <InputText
                             id="confirmEmail"
                             type="email"
@@ -128,16 +135,16 @@ export default function Inscription({ setSignupVisible, setLoginVisible }) {
                             value={formData.confirmEmail}
                             onChange={handleChange}
                         />
-                        <label htmlFor="confirmEmail">Confirme Email</label>
-                    </span>
+
+                </div>
 
                     {error && <div className="p-error">{error}</div>}
 
-                    <div>
+                <div className='flex gap-2'>
                         <Button type="submit" label="Valider" className="p-mt-2" />
                         <Button type="button" label="J'ai déjà un compte" onClick={() => { setSignupVisible(false); setLoginVisible(true) }} />
                     </div>
-                </div>
+
             </form>
         </div>
     );

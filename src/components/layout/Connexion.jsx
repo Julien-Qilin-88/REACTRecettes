@@ -62,41 +62,42 @@ export default function Connexion({ setSignupVisible, setLoginVisible }) {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div className="p-fluid p-formgrid p-grid">
-                    <div className="p-field p-col-12 p-md-6">
-                        <span className="p-float-label">
-                            <InputText
-                                id="name"
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                autoComplete="username"
-                            />
-                            <label htmlFor="name">Pseudo</label>
-                        </span>
-                    </div>
-                    <div className="p-field p-col-12 p-md-6">
-                        <span className="p-float-label">
-                            <Password
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                autoComplete="current-password"
-                                feedback={false}
-                                toggleMask
-                            />
-                            <label htmlFor="password">Mot de passe</label>
-                        </span>
-                    </div>
+        <div className="p-d-flex p-flex-column p-jc-center p-ai-center p-mb-5">
+            <form onSubmit={handleSubmit} className="p-d-flex p-flex-column p-fluid">
+
+                <div className="p-field mb-3">
+                    <label htmlFor="name">Pseudo :</label>
+                    <InputText
+                        id="name"
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        autoComplete="username"
+                    />
+
+
                 </div>
+
+                <div className="p-field mb-3">
+                    <label htmlFor="password">Mot de passe :</label>
+                    <Password
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        autoComplete="current-password"
+                        feedback={false}
+                        toggleMask
+                    />
+
+
+                </div>
+
 
                 {error && <div className="p-error">{error}</div>}
 
-                <div className="p-mt-3">
+                <div className='flex gap-2'>
                     <Button type="submit" label="Valider" className="p-mr-2" />
                     <Button
                         type="button"
