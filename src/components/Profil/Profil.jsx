@@ -18,6 +18,8 @@ const Profil = (props) => {
     const [editMode, setEditMode] = useState(null);
     const [message, setMessage] = useState('');
     const [messageError, setMessageError] = useState('');
+    const [users, setUsers] = useState([]);
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     // Utilisez useEffect pour déclencher la suppression du message après un certain délai
     useEffect(() => {
@@ -106,6 +108,13 @@ const Profil = (props) => {
 
     const handleDeleteAccount = async (e) => {
         e.preventDefault()
+
+        if (!confirmDelete) {
+            // Affichez une boîte de dialogue de confirmation ici
+            setConfirmDelete(true);
+            return;
+        }
+
         const token = localStorage.getItem('token');
         const userId = Number(localStorage.getItem('userId'));
 
@@ -123,7 +132,6 @@ const Profil = (props) => {
 
             if (response.status === 204) {
                 // Statut 204 signifie No Content, donc la suppression a réussi
-                console.log('Compte supprimé avec succès !');
                 resetFields();
                 setEditMode(null);
                 setMessage('Compte supprimé avec succès.');
@@ -147,20 +155,64 @@ const Profil = (props) => {
 
         };
     };
+    useEffect(() => {
+        const fetchUsers = async () => {
+            // Vérifiez d'abord le rôle de l'utilisateur
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                return;
+            }
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('http://localhost:3001/user/allUsers', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsers(data);
+                } else {
+                    const errorData = await response.json();
+                    setMessageError(`Erreur : ${errorData.message}`);
+                    setMessage('');
+                }
+            } catch (error) {
+                setMessageError(`Erreur : ${error.message}, veuillez réessayer plus tard.`);
+            }
+        };
 
-    const allUsers = async () => {
+        fetchUsers(); // Appeler la fonction pour récupérer les utilisateurs lors du chargement du composant
+    }, [users]) // Assurez-vous de fournir un tableau vide en tant que dépendance pour s'assurer que cela se produit une seule fois au montage du composant
+
+    const handleRoleChange = async (e, userId) => {
+
         const token = localStorage.getItem('token');
+        const newRole = e.target.checked ? 'admin' : 'user';
+
         try {
-            const response = await fetch('http://localhost:3001/user/allUsers', {
-                method: 'GET',
+            const response = await fetch(`http://localhost:3001/user/changerole/${userId}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
+                body: JSON.stringify({
+                    role: newRole
+                })
             });
+
             if (response.ok) {
                 const data = await response.json();
-                console.log(data); // Handle the data received from the server
+                // Mettre à jour l'état local avec les nouveaux utilisateurs après avoir modifié le rôle
+                setUsers(prevUsers => prevUsers.map(user => {
+                    if (user.id === userId) {
+                        return { ...user, role: data.newRole };
+                    }
+                    return user;
+                }));
             } else {
                 const errorData = await response.json();
                 setMessageError(`Erreur : ${errorData.message}`);
@@ -170,9 +222,6 @@ const Profil = (props) => {
             setMessageError(`Erreur : ${error.message}, veuillez réessayer plus tard.`);
         }
     };
-
-
-
 
     const resetFields = () => {
         setPasswords({
@@ -184,6 +233,7 @@ const Profil = (props) => {
     };
 
     const user = localStorage.getItem('user');
+    const role = localStorage.getItem('userRole');
 
     return (
         <div className='d-flex p-5'>
@@ -282,34 +332,71 @@ const Profil = (props) => {
                         </form>
                     )}
 
+
                     {editMode === 'delete' && (
-                        <form onSubmit={handleDeleteAccount} className="card flex gap-2">
-                            <label htmlFor="password" className="font-bold block mb-2">Mot de passe :</label>
+                        <form onSubmit={handleDeleteAccount} className="card flex-column gap-2">
+                            <div className='flex gap-2 align-items-center'>
+                                <label htmlFor="password" className="font-bold block mb-2">Mot de passe :</label>
                             <Password
                                 id="password"
                                 value={passwords.oldPassword}
                                 onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
                                 toggleMask
-                                autoComplete="current-password" // Ajoutez cet attribut pour résoudre l'erreur d'accessibilité
+                                    autoComplete="current-password"
                             />
                             <div className='flex gap-2'>
                                 <Button type="submit" severity="success" >Supprimer le compte</Button>
                                 <Button type="button" severity="danger" onClick={() => { setEditMode(null); resetFields(); }}>Annuler</Button>
+                                </div> 
                             </div>
-                </form>
+
+
+                            {confirmDelete && (
+                                <div className="confirmation-dialog text-center">
+                                    <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+                                    <Button type="submit" severity="danger">Confirmer la suppression</Button>
+                                    <Button type="button" severity="secondary" onClick={() => setConfirmDelete(false)}>Annuler</Button>
+                                </div>
+                            )}
+                        </form>
                     )}
 
                     {!editMode && (
                         <>
                             <div className="flex gap-2">
-                                <Button onClick={() => setEditMode('password')}>Changer le mot de passe</Button>
-                                <Button onClick={() => setEditMode('email')}>Changer l'adresse e-mail</Button>
-                                <Button onClick={() => setEditMode('delete')}>Supprimer le compte</Button>
+                                <Button onClick={() => setEditMode('password')}>Changer mon mot de passe</Button>
+                                <Button onClick={() => setEditMode('email')}>Changer mon adresse e-mail</Button>
+                                <Button onClick={() => setEditMode('delete')}>Supprimer mon compte</Button>
                             </div>
+                            {role === 'admin' && (
                             <div>
                                 <h3>Tous les utilisateurs</h3>
-                                <Button onClick={allUsers}>Afficher tous les utilisateurs</Button>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Admin</th>
+                                                <th>Nom</th>
+                                                <th>Email</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {users.map(user => (
+                                                <tr key={user.id}>
+                                                    <td>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={user.role === 'admin'}
+                                                            onChange={(e) => handleRoleChange(e, user.id)}
+                                                        />
+                                                    </td>
+                                                    <td>{user.name}</td>
+                                                    <td>{user.email}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                             </div>
+                            )}
                         </>
                     )}
 

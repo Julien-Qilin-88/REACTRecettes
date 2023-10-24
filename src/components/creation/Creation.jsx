@@ -52,12 +52,15 @@ function Creations({ recettes, setRecettes, handleRecetteCreation }) {
                 }
             });
 
-            // Faites quelque chose avec la réponse si nécessaire
-            console.log('Réponse du serveur:', response.data);
-
             // Mettez à jour l'état ou effectuez toute autre action nécessaire
             setRecettes([...recettes, response.data]);
             handleRecetteCreation();
+            if (response.ok) {
+                setError('recette ajouté avec succès');
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Une erreur s\'est produite lors de l\'envoi des données. Veuillez réessayer plus tard.');
+            }
         } catch (error) {
             console.error('Erreur lors de l\'envoi des données :', error);
             // Gérez l'erreur ici, affichez un message d'erreur à l'utilisateur, etc.

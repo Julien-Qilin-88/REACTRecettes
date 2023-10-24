@@ -46,7 +46,7 @@ export default function Connexion({ setSignupVisible, setLoginVisible }) {
                 // Stocker le token dans localStorage
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', user.id);
-
+                localStorage.setItem('userRole', user.role);
                 // Effectuer l'authentification côté client
                 login(user.name);
 

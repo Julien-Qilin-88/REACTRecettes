@@ -29,7 +29,6 @@ const ItemTemplate = (props) => {
 
     const isOwner = recette && (recette.idUser === userId || user === 'admin');
 
-    console.log(recette);
     // Rendu du composant
     return (
         <>
