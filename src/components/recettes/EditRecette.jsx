@@ -68,11 +68,10 @@ const EditRecette = ({ selectedRecette }) => {
                         <ElementRecette
                             label="Titre"
                             value={recette.title}
-
                             onSave={(newValue) => {
                                 handleUpdateRecette('title', newValue, true)
                             }}
-                            elementType="h2"
+                            elementType="input"
                         />
                     </div>
                     <div className='flex gap-4'>
@@ -82,7 +81,7 @@ const EditRecette = ({ selectedRecette }) => {
                             onSave={(newValue) => {
                                 handleUpdateRecette('image', newValue, true)
                             }}
-                            elementType="img"
+                            elementType="input"
                         />
                     </div>
 
@@ -93,6 +92,7 @@ const EditRecette = ({ selectedRecette }) => {
                             onSave={(newValue) => {
                                 handleUpdateRecette('description', newValue, true)
                             }}
+                            elementType="input"
                         />
                     </div>
 
@@ -103,6 +103,7 @@ const EditRecette = ({ selectedRecette }) => {
                             onSave={(newValue) => {
                                 handleUpdateRecette('tempsDePreparation', newValue, true)
                             }}
+                            elementType="input"
                         />
                     </div>
 
@@ -113,6 +114,7 @@ const EditRecette = ({ selectedRecette }) => {
                             onSave={(newValue) => {
                                 handleUpdateRecette('tempsDeCuisson', newValue, true)
                             }}
+                            elementType="input"
                         />
                     </div>
 

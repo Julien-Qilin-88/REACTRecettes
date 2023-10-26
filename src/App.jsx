@@ -22,8 +22,8 @@ function App() {
     const [selectedRecette, setSelectedRecette] = useState(null);
     const [showRecetteDetails, setShowRecetteDetails] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    // const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true' || false);
+
     const [randomRecipe, setRandomRecipe] = useState([]);
 
     // je voudrais recuperer le name de l'utilisateur connecté

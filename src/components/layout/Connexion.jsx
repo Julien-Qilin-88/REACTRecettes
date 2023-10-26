@@ -71,7 +71,7 @@ export default function Connexion({ setSignupVisible, setLoginVisible }) {
                         id="name"
                         type="text"
                         name="name"
-                        value={formData.name}
+                        value={formData.name.toLowerCase()}
                         onChange={handleChange}
                         autoComplete="username"
                     />

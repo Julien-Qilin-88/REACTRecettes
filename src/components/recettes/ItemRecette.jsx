@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'primereact/button';
-
-
+import { couperTexteParMot } from '../../functions/functions.js';
+import { Divider } from 'primereact/divider';
 // Composant fonctionnel pour afficher un élément de recette
 const ItemTemplate = (props) => {
     const { fetchRecetteById, setShowRecetteDetails, isAuthenticated, recettes } = props;
@@ -32,14 +32,13 @@ const ItemTemplate = (props) => {
     // Rendu du composant
     return (
         <>
-            <div className="col-12">
                 <div className="flex flex-column xl:flex-row xl:align-items-start p-2 gap-4">
                     <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:flex mx-auto border-round" src={props.image} alt={props.title} />
-                    <div className="flex flex-column lg:flex-row justify-content-between align-items-center xl:align-items-start lg:flex-1 gap-4">
+                <div className="flex flex-column lg:flex-row justify-content-between align-items-center xl:align-items-start lg:flex-1 gap-4" >
                         <div className="flex flex-column align-items-center lg:align-items-start gap-3">
                             <div className="flex flex-column gap-1">
                                 <div className="text-2xl font-bold text-900">{props.title}</div>
-                                <div className="text-700">{props.description}</div>
+                            <div className="text-700">{couperTexteParMot(props.description, 25)}</div>
                             </div>
                             <div className="flex flex-column gap-2">
                                 {/* Affichage de la note de la recette
@@ -67,7 +66,7 @@ const ItemTemplate = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            <Divider type="solid" />
         </>
     );
 };

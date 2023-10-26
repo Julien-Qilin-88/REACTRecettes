@@ -185,7 +185,7 @@ const Profil = (props) => {
         };
 
         fetchUsers(); // Appeler la fonction pour récupérer les utilisateurs lors du chargement du composant
-    }, [users]) // Assurez-vous de fournir un tableau vide en tant que dépendance pour s'assurer que cela se produit une seule fois au montage du composant
+    }, []) // Assurez-vous de fournir un tableau vide en tant que dépendance pour s'assurer que cela se produit une seule fois au montage du composant
 
     const handleRoleChange = async (e, userId) => {
 
